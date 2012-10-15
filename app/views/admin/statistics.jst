@@ -1,14 +1,15 @@
 <table>
   <thead></thead>
-  <tbody>
+
+  <tbody class="statistics">
 
     <!-- Big Numbers -->
 
     <tr class="data">
-      <td width="25%"><div class="number"><%= total_documents %></div></td>
-      <td width="25%"><div class="number"><%= private_docs %></div></td>
-      <td width="25%"><div class="number"><%= total_pages %></div></td>
-      <td width="25%"><div class="number"><%= average_page_count %></div></td>
+      <td width="25%" class="total_documents"></td>
+      <td width="25%" class="private_documents"></td>
+      <td width="25%" class="total_pages"></td>
+      <td width="25%" class="average_page_count"></td>
     </tr>
     <tr class="labels">
       <td>Total Documents</td>
@@ -18,10 +19,10 @@
     </tr>
 
     <tr class="data">
-      <td width="25%"><div class="number"><%= public_docs %></div></td>
-      <td width="25%"><div class="number"><%= embedded_documents %></div></td>
-      <td width="25%"><div class="number"><%= pending_docs %></div></td>
-      <td width="25%"><div class="number"><%= error_docs %></div></td>
+      <td width="25%" class="public_docs"></td>
+      <td width="25%" class="embedded_document_count"></td>
+      <td width="25%" class="pending_docs"></td>
+      <td width="25%" class="error_docs"></td>
     </tr>
     <tr class="labels">
       <td>Public Documents</td>
@@ -31,10 +32,10 @@
     </tr>
 
     <tr class="data">
-      <td width="25%"><div class="number"><%= remote_url_hits_last_week %></div></td>
-      <td width="25%"><div class="number"><%= remote_url_hits_all_time %></div></td>
-      <td width="25%"><div class="number"><%= count_organizations_embedding %></div></td>
-      <td width="25%"><div class="number"><%= count_total_collaborators %></div></td>
+      <td width="25%" class="remote_url_hits_last_week"></td>
+      <td width="25%" class="remote_url_hits_all_time"></td>
+      <td width="25%" class="count_organizations_embedding"></td>
+      <td width="25%" class="count_total_collaborators"></td>
     </tr>
     <tr class="labels">
       <td>Hits on published documents - past week</td>
@@ -43,45 +44,52 @@
       <td>Collaborators on Documents</td>
     </tr>
     
-    <!-- Document and Page Charts -->
+  </tbody>
 
-    <tr class="data">
-      <td colspan="2">
-        <div class="chart_col">
-          <div id="daily_docs_chart" class="chart"></div>
-        </div>
-      </td>
-      <td colspan="2">
-        <div class="chart_col">
-          <div id="weekly_docs_chart" class="chart"></div>
-        </div>
-      </td>
-    </tr>
-    <tr class="labels">
-      <td colspan="2">This Month: <b>Daily</b> Documents &amp; Pages</td>
-      <td colspan="2">All Time: <b>Weekly</b> Documents &amp; Pages</td>
-    </tr>
-    
-    <!-- Hit Charts -->
+  <tbody class="charts">
 
-    <tr class="data">
-      <td colspan="2">
-        <div class="chart_col">
-          <div id="daily_hits_chart" class="chart"></div>
-        </div>
-      </td>
-      <td colspan="2">
-        <div class="chart_col">
-          <div id="weekly_hits_chart" class="chart"></div>
-        </div>
-      </td>
-    </tr>
-    <tr class="labels">
-      <td colspan="2">This Month: <b>Daily</b> Hits on Published Documents</td>
-      <td colspan="2">All Time: <b>Weekly</b> Hits on Published Documents</td>
-    </tr>
-    
-    <!-- Recent 5 docs -->
+      <!-- Document and Page Charts -->
+
+      <tr class="data">
+        <td colspan="2">
+          <div class="chart_col">
+            <div id="daily_docs_chart" class="chart"></div>
+          </div>
+        </td>
+        <td colspan="2">
+          <div class="chart_col">
+            <div id="weekly_docs_chart" class="chart"></div>
+          </div>
+        </td>
+      </tr>
+      <tr class="labels">
+        <td colspan="2">This Month: <b>Daily</b> Documents &amp; Pages</td>
+        <td colspan="2">All Time: <b>Weekly</b> Documents &amp; Pages</td>
+      </tr>
+      
+      <!-- Hit Charts -->
+
+      <tr class="data">
+        <td colspan="2">
+          <div class="chart_col">
+            <div id="daily_hits_chart" class="chart"></div>
+          </div>
+        </td>
+        <td colspan="2">
+          <div class="chart_col">
+            <div id="weekly_hits_chart" class="chart"></div>
+          </div>
+        </td>
+      </tr>
+      <tr class="labels">
+        <td colspan="2">This Month: <b>Daily</b> Hits on Published Documents</td>
+        <td colspan="2">All Time: <b>Weekly</b> Hits on Published Documents</td>
+      </tr>
+      <!-- end of charts -->
+  </tbody>
+
+  <tbody>
+      <!-- Recent 5 docs -->
 
     <tr class="data">
       <td colspan="4">
@@ -95,18 +103,7 @@
             <td>Pages</td>
             <td></td>
           </thead>
-          <tbody>
-            <% _.each(Documents.models.reverse(), function(doc) { %>
-              <tr>
-                <td class="first"><img class="doc" src="<%= doc.get('thumbnail_url') %>" /></td>
-                <td><%= doc.get('id') %></td>
-                <td><%= doc.get('public') ? dc.inflector.truncate(doc.get('title') || '', 50) : '<i>private</i>' %></td>
-                <td><%= doc.get('account_name') %></td>
-                <td><%= doc.get('organization_name') %></td>
-                <td><%= doc.get('page_count') %></td>
-                <td class="last"></td>
-              </tr>
-            <% }); %>
+          <tbody id="latest_documents">
           </tbody>
         </table>
       </td>
@@ -163,18 +160,8 @@
             <td>Total</td>
             <td></td>
           </thead>
-          <tbody>
-            <% _.each(stats.numbers, function(numbers, model) { %>
-              <tr>
-                <td class="first"><%= model %></td>
-                <td><%= numbers.day %></td>
-                <td><%= numbers.week %></td>
-                <td><%= numbers.month %></td>
-                <td><%= numbers.half_year %></td>
-                <td><%= numbers.total %></td>
-                <td class="last"></td>
-              </tr>
-            <% }); %>
+          <tbody id="by_the_numbers">
+
           </tbody>
         </table>
       </td>

@@ -1,14 +1,6 @@
 dc.ui.Admin = Backbone.View.extend({
 
-  GRAPH_OPTIONS : {
-    xaxis     : {mode : 'time', minTickSize: [1, "day"]},
-    yaxis     : {},
-    legend    : {show : false},
-    series    : {lines : {show : true, fill : false}, points : {show : false}},
-    grid      : {borderWidth: 1, borderColor: '#222', labelMargin : 7, hoverable : true}
-  },
 
-  DATE_TRIPLETS : /(\d+)(\d{3})/,
 
   DATE_FORMAT : "%b %d, %y",
 
@@ -43,71 +35,41 @@ dc.ui.Admin = Backbone.View.extend({
   },
 
   initialize : function(options) {
-    _.bindAll(this, 'renderCharts', 'launchWorker', 'reprocessFailedDocument', 'vacuumAnalyze', 'optimizeSolr', '_loadAllAccounts');
+    _.bindAll(this, 'launchWorker', 'renderCharts', 'reprocessFailedDocument', 'vacuumAnalyze', 'optimizeSolr', '_loadAllAccounts');
     this._tooltip = new dc.ui.Tooltip();
+    this.per_account_stats = {};
     this._actionsMenu = this._createActionsMenu();
-    $(window).bind('resize', this.renderCharts);
+
+    this.latest_documents = new dc.ui.AdminLatestDocuments({ refreshEvery: 8 });
+    this.statistics = new dc.ui.AdminStatistics({ refreshEvery: 18 });
+    this.charts = new dc.ui.AdminCharts({refreshEvery: 22 });
+    this.by_the_numbers = new dc.ui.AdminByTheNumbers({ refreshEvery: 24 });
+
+    $(window).bind('resize', this.renderCharts );
   },
 
   render : function() {
-    $(this.el).html(JST.statistics(this.data()));
+    $(this.el).html(JST.statistics());
     $('#topbar').append(this._actionsMenu.render().el);
-    _.defer(this.renderCharts);
+
+
+    this.statistics.setElement(  this.$('.statistics') ).render();
+    this.renderCharts();
+    this.by_the_numbers.setElement( this.$('#by_the_numbers') ).render();
+    this.latest_documents.setElement( this.$('#latest_documents') ).render();
+
     if (Accounts.length) _.defer(this._loadAllAccounts);
     return this;
   },
 
-  renderCharts : function() {
-    this.$('.chart').html('');
-    $.plot($('#daily_docs_chart'),  [this._series(stats.daily_documents, 'Document', 1), this._series(stats.daily_pages, 'Page', 2)], this.GRAPH_OPTIONS);
-    $.plot($('#weekly_docs_chart'), [this._series(stats.weekly_documents, 'Document', 1), this._series(stats.weekly_pages, 'Page', 2)], this.GRAPH_OPTIONS);
-    $.plot($('#daily_hits_chart'),  [this._series(stats.daily_hits_on_documents, 'Document Hit'), this._series(stats.daily_hits_on_notes, 'Note Hit'), this._series(stats.daily_hits_on_searches, 'Search Hit')], this.GRAPH_OPTIONS);
-    $.plot($('#weekly_hits_chart'), [this._series(stats.weekly_hits_on_documents, 'Document Hit'), this._series(stats.weekly_hits_on_notes, 'Note Hit'), this._series(stats.weekly_hits_on_searches, 'Search Hit')], this.GRAPH_OPTIONS);
-  },
-
-  // Convert a date-hash into JSON that flot can properly plot.
-  _series : function(data, title, axis) {
-    return {
-      title : title,
-      yaxis : axis,
-      color : axis == 1 ? '#7EC6FE' : '#199aff',
-      data  : _.sortBy(_.map(data, function(val, key) {
-        return [parseInt(key, 10) * 1000, val];
-      }), function(pair) {
-        return pair[0];
-      })
-    };
+  renderCharts : function(){
+    this.charts.setElement( this.$('.charts') ).render();
   },
 
   renderAccounts : function() {
     this.$('#accounts_wrapper').html((new dc.ui.AdminAccounts()).render().el);
   },
 
-  data : function() {
-    var acl = stats.documents_by_access, a = dc.access;
-    return {
-      total_documents               : this._format(this.totalDocuments()),
-      embedded_documents            : this._format(stats.embedded_documents),
-      total_pages                   : this._format(stats.total_pages),
-      average_page_count            : this._format(stats.average_page_count),
-      public_docs                   : this._format(acl[a.PUBLIC] || 0),
-      private_docs                  : this._format((acl[a.PRIVATE] || 0) + (acl[a.ORGANIZATION] || 0) + (acl[a.EXCLUSIVE] || 0)),
-      pending_docs                  : this._format(acl[a.PENDING] || 0),
-      error_docs                    : this._format(acl[a.ERROR] || 0),
-      instance_tags                 : this.INSTANCE_TAGS,
-      remote_url_hits_last_week     : this._format(stats.remote_url_hits_last_week),
-      remote_url_hits_all_time      : this._format(stats.remote_url_hits_all_time),
-      count_organizations_embedding : this._format(stats.count_organizations_embedding),
-      count_total_collaborators     : this._format(stats.count_total_collaborators)
-
-    };
-  },
-
-  totalDocuments : function() {
-    return _.reduce(stats.documents_by_access, function(sum, value) {
-      return sum + value;
-    }, 0);
-  },
 
   launchWorker : function() {
     dc.ui.Dialog.confirm('Are you sure you want to launch a new Medium Compute<br />\
@@ -173,7 +135,7 @@ dc.ui.Admin = Backbone.View.extend({
     var count = item.datapoint[1];
     var date  = $.plot.formatDate(new Date(item.datapoint[0]), this.DATE_FORMAT);
     var title = dc.inflector.pluralize(item.series.title, count);
-    this._tooltip.show({
+    return this._tooltip.show({
       left : pos.pageX,
       top  : pos.pageY,
       title: count + ' ' + title,
@@ -190,10 +152,10 @@ dc.ui.Admin = Backbone.View.extend({
       $('tr.accounts_row').show();
     }, this);
     if (Accounts.length) return finish();
-    $.getJSON('/admin/all_accounts', {}, _.bind(function(resp) {
+    return $.getJSON('/admin/all_accounts', {}, _.bind(function(resp) {
       Accounts.reset(resp.accounts);
       delete resp.accounts;
-      _.extend(stats, resp);
+      _.extend(this.per_account_stats, resp);
       finish();
     }, this));
   },
@@ -211,16 +173,6 @@ dc.ui.Admin = Backbone.View.extend({
     this.$('.top_documents_label_week').css({'display': 'none'});
   },
 
-  // Format a number by adding commas in all the right places.
-  _format : function(number) {
-    var parts = (number + '').split('.');
-    var integer = parts[0];
-    var decimal = parts.length > 1 ? '.' + parts[1] : '';
-    while (this.DATE_TRIPLETS.test(integer)) {
-      integer = integer.replace(this.DATE_TRIPLETS, '$1,$2');
-    }
-    return integer + decimal;
-  },
 
   _createActionsMenu : function() {
     return new dc.ui.Menu({
@@ -240,12 +192,12 @@ dc.ui.Admin = Backbone.View.extend({
 
   _addCountsToAccounts : function() {
     Accounts.each(function(acc) {
-      acc.set({
-        public_document_count   : stats.public_per_account[acc.id],
-        private_document_count  : stats.private_per_account[acc.id],
-        page_count              : stats.pages_per_account[acc.id]
-      });
-    });
+    acc.set({
+      public_document_count   : this.per_account_stats.public_per_account[acc.id],
+      private_document_count  : this.per_account_stats.private_per_account[acc.id],
+      page_count              : this.per_account_stats.pages_per_account[acc.id]
+     });
+    },this);
   }
 
 });

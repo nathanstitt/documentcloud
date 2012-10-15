@@ -7,31 +7,15 @@ class AdminController < ApplicationController
 
   # The Admin Dashboard
   def index
-    @documents_by_access           = DC::Statistics.documents_by_access.to_json
-    @average_page_count            = DC::Statistics.average_page_count.to_json
-    @embedded_documents            = DC::Statistics.embedded_document_count.to_json
-    @total_pages                   = DC::Statistics.total_pages.to_json
-    @daily_documents               = keys_to_timestamps(DC::Statistics.daily_documents(1.month.ago)).to_json
-    @daily_pages                   = keys_to_timestamps(DC::Statistics.daily_pages(1.month.ago)).to_json
-    @weekly_documents              = keys_to_timestamps(DC::Statistics.weekly_documents).to_json
-    @weekly_pages                  = keys_to_timestamps(DC::Statistics.weekly_pages).to_json
-    @daily_hits_on_documents       = keys_to_timestamps(DC::Statistics.daily_hits_on_documents(1.month.ago)).to_json
-    @weekly_hits_on_documents      = keys_to_timestamps(DC::Statistics.weekly_hits_on_documents).to_json
-    @daily_hits_on_notes           = keys_to_timestamps(DC::Statistics.daily_hits_on_notes(1.month.ago)).to_json
-    @weekly_hits_on_notes          = keys_to_timestamps(DC::Statistics.weekly_hits_on_notes).to_json
-    @daily_hits_on_searches        = keys_to_timestamps(DC::Statistics.daily_hits_on_searches(1.month.ago)).to_json
-    @weekly_hits_on_searches       = keys_to_timestamps(DC::Statistics.weekly_hits_on_searches).to_json
-    @documents                     = Document.finished.chronological.all(:limit => 5).map {|d| d.admin_attributes }.to_json
     @failed_documents              = Document.failed.chronological.all(:limit => 3).map {|d| d.admin_attributes }.to_json
-    @instances                     = DC::AWS.new.describe_instances.to_json
     @top_documents                 = RemoteUrl.top_documents(7, :limit => 5).to_json
     @top_searches                  = RemoteUrl.top_searches(7, :limit => 5).to_json
     @top_notes                     = RemoteUrl.top_notes(7, :limit => 5).to_json
-    @remote_url_hits_last_week     = DC::Statistics.remote_url_hits_last_week.to_json
-    @remote_url_hits_all_time      = DC::Statistics.remote_url_hits_all_time.to_json
-    @count_organizations_embedding = DC::Statistics.count_organizations_embedding.to_json
-    @count_total_collaborators     = DC::Statistics.count_total_collaborators.to_json
-    @numbers                       = DC::Statistics.by_the_numbers.to_json
+    begin
+      @instances                     = DC::AWS.new.describe_instances.to_json
+    rescue Exception=>e
+      @instances = '[]'
+    end
     @accounts                      = [].to_json
     if params[:accounts]
       @accounts                    = Account.all.to_json
@@ -54,6 +38,10 @@ class AdminController < ApplicationController
     })
   end
 
+  def lastest_documents_data
+    render :json=>Document.finished.chronological.all(:limit => 5).map {|d| d.admin_attributes }.to_json
+  end
+
   def top_documents_csv
     return not_found unless request.format.csv?
     csv = DC::Statistics.top_documents_csv
@@ -65,6 +53,38 @@ class AdminController < ApplicationController
     csv = DC::Statistics.accounts_csv
     send_data csv, :type => :csv, :filename => 'documents.csv'
   end
+
+  def statistics_number_data
+    render :json=>DC::Statistics.by_the_numbers.map{|k,v| v.merge({:title=>k}) }.to_json    
+  end
+
+  def chart_data
+    render :json => {
+      :daily_documents               => keys_to_timestamps(DC::Statistics.daily_documents(1.month.ago)),
+      :daily_pages                   => keys_to_timestamps(DC::Statistics.daily_pages(1.month.ago)),
+      :weekly_documents              => keys_to_timestamps(DC::Statistics.weekly_documents),
+      :weekly_pages                  => keys_to_timestamps(DC::Statistics.weekly_pages),
+      :daily_hits_on_documents       => keys_to_timestamps(DC::Statistics.daily_hits_on_documents(1.month.ago)),
+      :weekly_hits_on_documents      => keys_to_timestamps(DC::Statistics.weekly_hits_on_documents),
+      :daily_hits_on_notes           => keys_to_timestamps(DC::Statistics.daily_hits_on_notes(1.month.ago)),
+      :weekly_hits_on_notes          => keys_to_timestamps(DC::Statistics.weekly_hits_on_notes),
+      :daily_hits_on_searches        => keys_to_timestamps(DC::Statistics.daily_hits_on_searches(1.month.ago)),
+      :weekly_hits_on_searches       => keys_to_timestamps(DC::Statistics.weekly_hits_on_searches)
+    }
+  end
+
+  def statistics_data
+    methods = %w{ documents_by_access total_pages average_page_count embedded_document_count 
+                  remote_url_hits_last_week remote_url_hits_all_time count_organizations_embedding
+                  count_total_collaborators
+              }
+    stats = methods.each_with_object([]) do | key, stats |
+      stats << { :id=>key, :value=> DC::Statistics.send(key) }
+    end
+
+    render :json => stats.to_json
+  end
+
 
   # Attempt a new signup for DocumentCloud -- includes both the organization and
   # its first account. If everything's kosher, the journalist is logged in.
