@@ -374,6 +374,73 @@ body.redact_editing .DV-annotationRegion {
     cursor: move;
   }
 
+/* ================= */
+/* = Rotate Pages = */
+/* ================= */
+
+.DV-pages.rotate_pages_viewer {
+  margin-top: 134px;
+}
+
+.editor_toolbar .rotate_pages .editor_hint {
+  padding: 20px 132px 0 24px;
+}
+
+.editor_toolbar .rotate_pages .arrows {
+  display: block;
+  float: left;
+  padding: 20px 0px 0px 50px;
+}
+
+
+
+  .editor_toolbar .rotate_pages .arrows.not_enabled {
+    cursor: default;
+    opacity: 0.33;
+    top: 0;
+  }
+
+  .editor_toolbar .rotate_pages .arrows .minibutton {
+    float: left;
+    width: 60px;
+  }
+  .editor_toolbar .rotate_pages .right{
+    margin-left: 20px;
+  }
+
+
+.DV-thumbnails .DV-thumbnail.r90 .DV-thumbnail-select {
+  /* for firefox, safari, chrome, etc. */
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  /* for ie */
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+}
+
+.DV-thumbnails .DV-thumbnail.r180 .DV-thumbnail-select {
+  /* for firefox, safari, chrome, etc. */
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  /* for ie */
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+}
+
+.DV-thumbnails .DV-thumbnail.r180 .DV-thumbnail-select {
+  /* for firefox, safari, chrome, etc. */
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  /* for ie */
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+}
+.DV-thumbnails .DV-thumbnail.r270 .DV-thumbnail-select {
+  /* for firefox, safari, chrome, etc. */
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  /* for ie */
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+
+
 /* ================== */
 /* = Edit Page Text = */
 /* ================== */

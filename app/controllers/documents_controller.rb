@@ -81,6 +81,12 @@ class DocumentsController < ApplicationController
     json doc
   end
 
+  def rotate_pages
+    return not_found unless doc = current_document(true)
+    doc.rotate_pages( params[:rotations].map{|n,obj| obj} ) if params[:rotations] && ! params[:rotations].empty?
+    json doc
+  end
+
   def reorder_pages
     return not_found unless doc = current_document(true)
     return json(nil, 409) if params[:page_order].length != doc.page_count

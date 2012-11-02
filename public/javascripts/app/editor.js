@@ -35,6 +35,7 @@ _.extend(dc.app.editor, {
     this.annotationEditor   = new dc.ui.AnnotationEditor();
     this.removePagesEditor  = new dc.ui.RemovePagesEditor({editor : this});
     this.reorderPagesEditor = new dc.ui.ReorderPagesEditor({editor : this});
+    this.rotatePagesEditor  = new dc.ui.RotatePagesEditor({editor : this});
     this.editPageTextEditor = new dc.ui.EditPageTextEditor({editor : this});
     this.replacePagesEditor = new dc.ui.ReplacePagesEditor({editor : this});
   },
@@ -60,6 +61,7 @@ _.extend(dc.app.editor, {
     this.reorderPagesEditor.close();
     this.replacePagesEditor.close();
     this.editPageTextEditor.close();
+    this.rotatePagesEditor.close();
     return true;
   }
 

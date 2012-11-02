@@ -684,18 +684,32 @@ class Document < ActiveRecord::Base
     }.to_json}).body)
   end
 
+  def rotate_pages( rotations )
+    eventual_access ||= access || PRIVATE
+    update_attributes :access => PENDING
+    record_job(RestClient.post(DC_CONFIG['cloud_crowd_server'] + '/jobs', {:job => {
+      'action'  => 'document_rotate_pages',
+      'inputs'  => [id],
+      'options' => {
+        :id                    => id,
+        :rotations             => rotations,
+        :access                => eventual_access,
+      }
+    }.to_json}).body)
+  end
+
   def reorder_pages(page_order, eventual_access=nil)
     eventual_access ||= access || PRIVATE
     update_attributes :access => PENDING
     record_job(RestClient.post(DC_CONFIG['cloud_crowd_server'] + '/jobs', {:job => {
-      'action'  => 'document_reorder_pages',
-      'inputs'  => [id],
-      'options' => {
-        :id          => id,
-        :page_order  => page_order,
-        :access      => eventual_access
-      }
-    }.to_json}).body)
+                                   'action'  => 'document_reorder_pages',
+                                   'inputs'  => [id],
+                                   'options' => {
+                                     :id          => id,
+                                     :page_order  => page_order,
+                                     :access      => eventual_access
+                                   }
+                                 }.to_json}).body)
   end
 
   def assert_page_order(page_order)

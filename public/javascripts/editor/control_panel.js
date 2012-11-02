@@ -21,6 +21,7 @@ dc.ui.ViewerControlPanel = Backbone.View.extend({
     'click .edit_data':             'editData',
     'click .edit_remove_pages':     'editRemovePages',
     'click .edit_reorder_pages':    'editReorderPages',
+    'click .edit_rotate_pages':     'editRotatePages',
     'click .edit_page_text':        'editPageText',
     'click .reprocess_text':        'reprocessText',
     'click .edit_replace_pages':    'editReplacePages',
