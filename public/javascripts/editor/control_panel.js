@@ -235,6 +235,11 @@ dc.ui.ViewerControlPanel = Backbone.View.extend({
     dc.app.editor.reorderPagesEditor.toggle();
   },
 
+  editRotatePages : function() {
+    this.openThumbnailsTab();
+    dc.app.editor.rotatePagesEditor.toggle();
+  },
+
   togglePublicAnnotation : function() {
     this.openDocumentTab();
     dc.app.editor.annotationEditor.toggle('public');

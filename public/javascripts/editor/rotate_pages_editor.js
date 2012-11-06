@@ -4,9 +4,10 @@ dc.ui.RotatePagesEditor = dc.ui.EditorToolbar.extend({
 
   events : {
     'click .rotate_pages_confirm_input' : 'confirmRotatePages',
-    'click .close_editor'                : 'close',
-    'click .left' : 'rotateLeft',
-    'click .right' : 'rotateRight'
+    'click .close_editor'               : 'close',
+    'click .left'                       : 'rotateLeft',
+    'click .right'                      : 'rotateRight',
+    'click .toggle'                     : 'toggleSelections'
   },
 
   apiExtensions:{
@@ -35,7 +36,7 @@ dc.ui.RotatePagesEditor = dc.ui.EditorToolbar.extend({
 
   initialize : function(options) {
     this.editor = options.editor;
-
+    _.bindAll( this, 'toggleThumbnail');
     // HACK!  This monkey patches the viwer api with
     // rotate functionality
     // Should really go onto it directly
@@ -53,16 +54,36 @@ dc.ui.RotatePagesEditor = dc.ui.EditorToolbar.extend({
     return css ? parseInt(css.substr(1)) : 0;
   },
 
+
+  // this compicated dance:
+  //   waits a 1/2 sec for the current animation to complete
+  //   sets the non-animate class
+  //   removes the incorrect rotation
+  //   waits another 1/2 sec, then removes the non-animate class
+  _removeBadRotation:function(el,bad ){
+    _.delay( function(){
+      el.addClass('no-animate');
+      el.removeClass(bad);
+      _.delay( function() { 
+        el.removeClass('no-animate');
+      }, 500 );
+    }, 500 );
+  },
+
   _performRotation: function( el,move ){
     var rotation     = this.getElementsRotation( el ),
         new_rotation = rotation + move;
-    if ( new_rotation < 0 ){
-      new_rotation = 270;
-    } else if ( new_rotation >= 360 ){
-      new_rotation = 0;
-    }
     el.removeClass('r'+rotation);
     el.addClass( 'r'+new_rotation);
+
+    if ( 360 == new_rotation  ){
+      this._removeBadRotation( el, 'r360' );
+    }
+
+    if (  -90 == new_rotation ){
+      el.addClass('r270');
+      this._removeBadRotation( el, 'r-90');
+    }
   },
 
   rotateLeft: function(){
@@ -74,7 +95,12 @@ dc.ui.RotatePagesEditor = dc.ui.EditorToolbar.extend({
   rotateRight: function(){
     var move = 90, me = this;
     this.getSelections().each( function(){ me._performRotation( $(this), move ); } );
-    this.updateSavableState();
+    this.updateSavableState(); 
+  },
+  
+  toggleSelections: function(){
+    this.$s.thumbnailsContainer.find( '.DV-thumbnail' ).toggleClass('DV-selected');
+    this.updateSelectedCountNotice();
   },
 
   updateSavableState: function(){
@@ -114,7 +140,23 @@ dc.ui.RotatePagesEditor = dc.ui.EditorToolbar.extend({
     this.$s.guideButton.addClass('open');
     this.$s.saveButton.setMode('not', 'enabled');
     this.hideSelectedThumbnail();
+    this.$s.thumbnailsContainer.on('mousedown','.DV-thumbnail', this.toggleThumbnail );
   },
+
+  close : function() {
+    if (this.modes.open == 'is') {
+      this.editor.setSaveState();
+      this.$s.thumbnailsContainer.off('mousedown','.DV-thumbnail', this.toggleThumbnail );
+      $('.DV-currentPageImage-disabled', this.$s.page).addClass('DV-currentPageImage').removeClass('DV-currentPageImage-disabled');
+      this.setMode('not', 'open');
+      jQuery('.DV-thumbnails').sortable('destroy');
+      this.$s.guide.hide();
+      this.$s.guideButton.removeClass('open');
+      this.$s.pages.removeClass('rotate_pages_viewer');
+      $(this.el).hide();
+      this.viewer.api.leaveRotatePagesMode();
+    }
+  }, 
 
   render : function() {
     $(this.el).html(JST['rotate_pages']({}));
@@ -128,11 +170,17 @@ dc.ui.RotatePagesEditor = dc.ui.EditorToolbar.extend({
     $('.DV-currentPageImage', this.$s.thumbnails).removeClass('DV-currentPageImage')
       .addClass('DV-currentPageImage-disabled');
 
-    this.$s.thumbnailsContainer.on('mousedown','.DV-thumbnail', _.bind(this.toggleThumbnail, this) );
+    
+
   },
 
   toggleThumbnail: function( evt ){
+    console.log("Toggle");
     $(evt.target).closest('.DV-thumbnail').toggleClass('DV-selected');
+    this.updateSelectedCountNotice();
+  },
+
+  updateSelectedCountNotice : function(){
     var selected_count = this.getSelections().length;
     if ( selected_count > 0 ){
       this.$s.helpText.html( "Rotate "+ selected_count + ' ' + 
@@ -176,20 +224,7 @@ dc.ui.RotatePagesEditor = dc.ui.EditorToolbar.extend({
         _.defer(dc.ui.Dialog.alert, "The pages are being rotated. Please close this document.");
       }
     });
-  },
-
-  close : function() {
-    if (this.modes.open == 'is') {
-      this.editor.setSaveState();
-      $('.DV-currentPageImage-disabled', this.$s.page).addClass('DV-currentPageImage').removeClass('DV-currentPageImage-disabled');
-      this.setMode('not', 'open');
-      jQuery('.DV-thumbnails').sortable('destroy');
-      this.$s.guide.hide();
-      this.$s.guideButton.removeClass('open');
-      this.$s.pages.removeClass('rotate_pages_viewer');
-      $(this.el).hide();
-      this.viewer.api.leaveRotatePagesMode();
-    }
   }
+
 
 });

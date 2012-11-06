@@ -13,9 +13,12 @@ class DocumentRotatePages < DocumentModBase
   # end
 
   def process
-    Rails.logger.debug "PROCESS:"
-    Rails.logger.debug options
-    Rails.logger.debug input
+
+    # sort by page number so pdftk puts the pages together in the correct order
+    @rotations = options['rotations'].sort!{|a,b| a['page_number'].to_i <=> b['page_number'].to_i }
+
+    Rails.logger.debug( "Rotating Document ID: #{document.id}  Rotations are:" )
+    Rails.logger.debug( @rotations )
 
     return unless pdf = process_pdf
 
@@ -27,32 +30,6 @@ class DocumentRotatePages < DocumentModBase
     document.id
   end
 
-  def process_images( pdf )
-
-    pg_numbers = options['rotations'].map{|rt| rt['page_number'] }
-
-    Docsplit.extract_images( pdf, 
-                             :format => :gif, 
-                             :pages=> pg_numbers,
-                             :size => Page::IMAGE_SIZES.values, 
-                             :rolling => true, 
-                             :output => 'images' )
-
-    Rails.logger.warn Dir['images/700x/*.gif']
-    Rails.logger.warn Dir['images/1000x/*.gif']
-    pg_numbers.each do | number |
-      image  = "#{document.slug}_#{number}.gif"
-      DC::Import::Utils.save_page_images(asset_store, document, number, image, access)
-    end
-  end
-
-  def rotation_to_pdftk( rotation )
-    case rotation.to_i
-      when 90  then 'E'
-      when 180 then 'S'
-      when 270 then 'W'
-    end
-  end
 
   def process_pdf
     nextpg=1
@@ -62,7 +39,7 @@ class DocumentRotatePages < DocumentModBase
 
     File.open(src_pdf, 'w+') {|f| f.write(asset_store.read_pdf(document)) }
 
-    options['rotations'].each do | opts |
+    @rotations.each do | opts |
       pg = opts['page_number'].to_i
       rotation = rotation_to_pdftk( opts['rotation'] )
       if nextpg < pg
@@ -75,7 +52,7 @@ class DocumentRotatePages < DocumentModBase
       cmd << "#{nextpg}-end"
     end
     cmd = "pdftk #{src_pdf} cat #{cmd.join(' ')} output #{dest_pdf}"
-    Rails.logger.warn cmd
+    Rails.logger.debug cmd
     output = `#{cmd} 2>&1`
     Rails.logger.warn "#{cmd} returned: #{output}" unless output.empty?
     if 0 == $?.exitstatus && File.exists?( dest_pdf )
@@ -88,7 +65,31 @@ class DocumentRotatePages < DocumentModBase
       Rails.logger.warn "Not saving pdf;  exitstatus: #{$?.exitstatus}, #{dest_pdf} exists?: #{File.exists?( dest_pdf )}"
       return nil
     end
+  end
 
+  def process_images( pdf )
+    Docsplit.extract_images( pdf, 
+                             :format => :gif, 
+                             :pages=> @rotations.map{|r| r['page_number'].to_i },
+                             :size => Page::IMAGE_SIZES.values, 
+                             :rolling => true, 
+                             :output => 'images' )
+
+    @rotations.each do | rotation |
+      pg_num = rotation['page_number']
+      image  = "#{document.slug}_#{pg_num}.gif"
+      DC::Import::Utils.save_page_images(asset_store, document, pg_num, image, access)
+    end
+  end
+
+
+  def rotation_to_pdftk( degrees )
+    case degrees.to_i
+    when 90  then 'R'
+    when 180 then 'D'
+    when 270 then 'L'
+    else 0
+    end
   end
 
 
