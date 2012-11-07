@@ -106,7 +106,7 @@ class Document < ActiveRecord::Base
     access << "(documents.access in (#{PRIVATE}, #{PENDING}, #{ERROR}, #{ORGANIZATION}, #{EXCLUSIVE}) and documents.account_id = #{account.id})" if account
     access << "(documents.access in (#{ORGANIZATION}, #{EXCLUSIVE}) and documents.organization_id = #{org.id})" if org && account && !account.freelancer?
     access << "(memberships.document_id = documents.id)" if has_shared
-    opts = {:conditions => ["(#{access.join(' or ')})"], :readonly => false}
+    opts = {:conditions => ["( documents.access not in (#{INVISIBLE},#{DELETED} ) ) and ( #{access.join(' or ')} )"], :readonly => false}
     if has_shared
       opts[:joins] = <<-EOS
         left outer join 

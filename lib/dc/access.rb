@@ -27,6 +27,10 @@ module DC
 
     ACCESS_NAMES = ACCESS_MAP.invert
 
+    def has_access_level?( *access_checks )
+      access_checks.include?( access )
+    end
+
   end
 
 end

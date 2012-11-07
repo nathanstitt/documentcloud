@@ -176,7 +176,8 @@ class ApiController < ApplicationController
   end
 
   def current_note
-    @current_note ||= Annotation.accessible(current_account).find_by_id(params[:note_id].to_i)
+    annotation = Annotation.find_by_id(params[:note_id].to_i)
+    @current_note ||= annotation.document.annotations.accessible(current_account).find( annotation.id )
   end
 
 end

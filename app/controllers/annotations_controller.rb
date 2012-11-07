@@ -75,7 +75,7 @@ class AnnotationsController < ApplicationController
   private
 
   def current_annotation
-    @current_annotation ||= current_document.annotations.find_by_id(params[:id])
+    @current_annotation ||= current_document.annotations.accessible(current_account).find_by_id(params[:id])
   end
 
   def current_document

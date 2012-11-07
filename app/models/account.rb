@@ -154,8 +154,17 @@ class Account < ActiveRecord::Base
     project && project.collaborators.exists?(id)
   end
 
+  def has_role?( *role_checks )
+    role_checks.include?( role )
+  end
+
   def allowed_to_edit?(resource)
-    owns_or_collaborates?(resource) || shared?(resource)
+    # only admins and contributors can access INVISIBLE & DELETED resources.
+    if resource.has_access_level?( INVISIBLE, DELETED ) && ! self.has_role?( ADMINISTRATOR, CONTRIBUTOR )
+      return false
+    else
+      return ( owns_or_collaborates?(resource) || shared?(resource) )
+    end
   end
 
   def allowed_to_edit_account?(account)

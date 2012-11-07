@@ -41,7 +41,7 @@ namespace :build do
   # Pull in a new build of the Document Viewer.
   task :viewer do
 
-    Dir.chdir '../document-viewer'
+    Dir.chdir ENV['VIEWER_ROOT'] || '../document-viewer'
 
     FileUtils.rm_r('build') if File.exists?('build')
     sh "jammit -f -o build"
