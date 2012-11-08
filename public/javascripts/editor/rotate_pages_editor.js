@@ -175,7 +175,6 @@ dc.ui.RotatePagesEditor = dc.ui.EditorToolbar.extend({
   },
 
   toggleThumbnail: function( evt ){
-    console.log("Toggle");
     $(evt.target).closest('.DV-thumbnail').toggleClass('DV-selected');
     this.updateSelectedCountNotice();
   },
