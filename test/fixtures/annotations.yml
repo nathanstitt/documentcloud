@@ -1,0 +1,27 @@
+
+w_markdown:
+  organization: tribune
+  account: louis
+  document: short
+  page_number: 1
+  location: 165,324,175,124
+  access: <%= DC::Access::PUBLIC %>
+  title: A markdown note
+  content: |
+    Markdown: Syntax
+    ================
+    A List:
+      +   Main
+      +   Basics
+      +   Syntax
+      +   License
+      +   Dingus
+
+    [Overview](#overview)
+    **Note:** This note is formatted using Markdown
+    # Header 1 #
+    ## Header 2 ##
+    ### Header 3 ###             (Hashes on right are optional)
+    #### Header 4 ####
+    ##### Header 5 #####
+

@@ -14,7 +14,7 @@ dc.ui.AnnotationEditor = Backbone.View.extend({
     this._inserts = $('.DV-pageNoteInsert');
     this.redactions = [];
     _.bindAll(this, 'open', 'close', 'drawAnnotation', 'saveAnnotation',
-      'deleteAnnotation', 'createPageNote');
+      'deleteAnnotation', 'createPageNote', '_adjustNoteCount');
     currentDocument.api.onAnnotationSave(this.saveAnnotation);
     currentDocument.api.onAnnotationDelete(this.deleteAnnotation);
     this._inserts.click(this.createPageNote);
@@ -175,18 +175,34 @@ dc.ui.AnnotationEditor = Backbone.View.extend({
     return _.extend(params, extra || {});
   },
 
-  createAnnotation : function(anno) {
-    var params = this.annotationToParams(anno);
-    $.ajax({url : this._baseURL, type : 'POST', data : params, dataType : 'json', success : _.bind(function(resp) {
-      anno.server_id = resp.id;
-      this._adjustNoteCount(1, this._kind == 'public' ? 1 : 0);
-    }, this)});
+  setIsSaving: function( is_saving ){
+    currentDocument.helpers.setActiveAnnotationIsSaving( is_saving );
   },
 
   updateAnnotation : function(anno) {
     var url     = this._baseURL + '/' + anno.server_id;
     var params  = this.annotationToParams(anno, {_method : 'put'});
-    $.ajax({url : url, type : 'POST', data : params, dataType : 'json'});
+    this.setIsSaving( true );
+    $.ajax(url, { type : 'POST', data : params, dataType : 'json',
+                  success: function(resp){
+                    console.log( resp.html_content );
+                    anno.html_content = resp.html_content;
+                  },
+                  complete: _.bind( this.setIsSaving, this, false )
+                } );
+  },
+
+  createAnnotation : function(anno) {
+    var params = this.annotationToParams(anno);
+    this.setIsSaving( true );
+    $.ajax({ url : this._baseURL, type : 'POST', data : params, dataType : 'json', 
+             success: function( resp ){
+               anno.server_id = resp.id;
+               anno.html_content = resp.html_content;
+               this._adjustNoteCount(1, this._kind == 'public' ? 1 : 0);
+             },
+             complete: _.bind( this.setIsSaving, this, false )
+           });
   },
 
   deleteAnnotation : function(anno) {

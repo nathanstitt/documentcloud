@@ -1,0 +1,9 @@
+
+short:
+  organization: tribune
+  account: louis
+  access: <%= DC::Access::PUBLIC %>
+  page_count: 1
+  title: a short document
+  slug: short
+  file_hash: AA34

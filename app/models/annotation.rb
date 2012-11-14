@@ -4,6 +4,7 @@ class Annotation < ActiveRecord::Base
   include DC::Access
 
   belongs_to :document
+  belongs_to :organization
   belongs_to :account # NB: This account is not the owner of the document.
                       #     Rather, it is the author of the annotation.
                       
@@ -14,7 +15,7 @@ class Annotation < ActiveRecord::Base
   validates_presence_of :title, :page_number
 
   before_validation :ensure_title
-
+  before_save   :clean_content
   after_create  :reset_public_note_count
   after_destroy :reset_public_note_count
 
@@ -47,6 +48,18 @@ class Annotation < ActiveRecord::Base
 
   named_scope :unrestricted, :conditions => {:access => PUBLIC}
 
+  def clean_content
+    self.content = self.sanitize( self.content )
+  end
+
+  def content=(txt)
+    super(txt)
+    @html_content = nil
+  end
+
+  def html_content
+    @html_content ||=  RDiscount.new( content ).to_html
+  end
   # Annotations are not indexed for the time being.
 
   # searchable do
@@ -122,7 +135,8 @@ class Annotation < ActiveRecord::Base
   end
   
   def canonical(opts={})
-    data = {'id' => id, 'page' => page_number, 'title' => title, 'content' => content, :access => access_name}
+    data = {'id' => id, 'page' => page_number, 'title' => title, 'access' => access_name,
+      'content' => content, 'html_content' => html_content }
     data['location'] = {'image' => location} if location
     data['image_url'] = document.page_image_url_template if opts[:include_image_url]
     data['published_url'] = document.published_url || document.document_viewer_url(:allow_ssl => true) if opts[:include_document_url]
