@@ -1,7 +1,5 @@
 dc.ui.Admin = Backbone.View.extend({
 
-
-
   DATE_FORMAT : "%b %d, %y",
 
   // Quick tags for the instances we know about. Purely for convenience.
@@ -38,25 +36,52 @@ dc.ui.Admin = Backbone.View.extend({
     _.bindAll(this, 'launchWorker', 'renderCharts', 'reprocessFailedDocument', 'vacuumAnalyze', 'optimizeSolr', '_loadAllAccounts');
     this._tooltip = new dc.ui.Tooltip();
     this.per_account_stats = {};
-    this._actionsMenu = this._createActionsMenu();
+    this._actionsMenu      = this._createActionsMenu();
 
-    this.latest_documents = new dc.ui.AdminLatestDocuments({ refreshEvery: 8 });
-    this.statistics = new dc.ui.AdminStatistics({ refreshEvery: 18 });
-    this.charts = new dc.ui.AdminCharts({refreshEvery: 22 });
-    this.by_the_numbers = new dc.ui.AdminByTheNumbers({ refreshEvery: 24 });
+    this.statistics        = new dc.ui.AdminStatistics({ refreshEvery: 18 });
+    this.charts            = new dc.ui.AdminCharts({refreshEvery: 22 });
+    this.updaters = {};
+    _.each({
+      'ec2': 20,
+      'latest_documents': 8,
+      'by_the_numbers': 20,
+      'top_documents': { comparator: function( doc ){  return -doc.get('hits');  } },
+      'top_searches': { comparator: function( search ){ return -search.get('hits'); } },
+      'top_notes': { beforeRender: this.linkNoteDocument, comparator: function( note ){ return -note.get('hits'); } },
+      'failed_documents': 10
+    }, this.tableUpdaterFactory, this );
 
     $(window).bind('resize', this.renderCharts );
   },
 
+  tableUpdaterFactory: function( opts, name ){
+    if ( _.isNumber(opts) )
+      opts = { refreshEvery: opts };
+    _.extend( opts, {
+      tmpl: name + '_line',
+      action: name + '_data'
+    });
+    this.updaters[name] = new  dc.ui.AdminTableUpdater( opts );
+  },
+
+
+  linkNoteDocument: function(notes){
+    notes.each(function(note) {
+      note.document = new dc.model.Document(note.get('document'));
+    });
+  },
+
+
   render : function() {
-    $(this.el).html(JST.statistics());
+    $(this.el).html( JST.main_page() );
     $('#topbar').append(this._actionsMenu.render().el);
 
+    _.each( this.updaters, function( updater, name ){
+      updater.setElement( this.$('#' + name + '_tmpl' ) );
+    },this);
 
     this.statistics.setElement(  this.$('.statistics') ).render();
     this.renderCharts();
-    this.by_the_numbers.setElement( this.$('#by_the_numbers') ).render();
-    this.latest_documents.setElement( this.$('#latest_documents') ).render();
 
     if (Accounts.length) _.defer(this._loadAllAccounts);
     return this;

@@ -7,22 +7,10 @@
 
 <script type="text/javascript">
   window.CLOUD_CROWD_SERVER   = "<%= DC_CONFIG['cloud_crowd_server'] %>";
-  window.TopDocuments         = new dc.model.DocumentSet();
-  window.TopNotes             = new dc.model.NoteSet();
-  window.TopSearches          = new dc.model.SearchEmbeds();
-  window.FailedDocuments      = new dc.model.DocumentSet();
   window.stats = {};
-  window.stats.instances      = <%= @instances %>;
+
 
   Accounts.reset(<%= @accounts %>);
-  TopDocuments.reset(<%= @top_documents %>);
-  TopSearches.reset(<%= @top_searches %>);
-  TopNotes.reset(<%= @top_notes %>);
-  FailedDocuments.reset(<%= @failed_documents %>);
-
-  TopNotes.each(function(note) {
-    note.document = new dc.model.Document(note.get('document'));
-  });
 
   $(function(){
     $('#content').append((new dc.ui.Admin()).render().el);

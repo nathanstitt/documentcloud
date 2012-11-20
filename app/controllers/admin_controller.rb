@@ -7,15 +7,6 @@ class AdminController < ApplicationController
 
   # The Admin Dashboard
   def index
-    @failed_documents              = Document.failed.chronological.all(:limit => 3).map {|d| d.admin_attributes }.to_json
-    @top_documents                 = RemoteUrl.top_documents(7, :limit => 5).to_json
-    @top_searches                  = RemoteUrl.top_searches(7, :limit => 5).to_json
-    @top_notes                     = RemoteUrl.top_notes(7, :limit => 5).to_json
-    begin
-      @instances                     = DC::AWS.new.describe_instances.to_json
-    rescue Exception=>e
-      @instances = '[]'
-    end
     @accounts                      = [].to_json
     if params[:accounts]
       @accounts                    = Account.all.to_json
@@ -38,25 +29,53 @@ class AdminController < ApplicationController
     })
   end
 
-  def lastest_documents_data
+  def ec2_data
+    begin
+      render :json=>DC::AWS.new.describe_instances.to_json
+    rescue Exception=>e
+      render :json=>[]
+    end
+  end
+
+
+  def latest_documents_data
     render :json=>Document.finished.chronological.all(:limit => 5).map {|d| d.admin_attributes }.to_json
   end
+
+
+  def by_the_numbers_data
+    render :json=>DC::Statistics.by_the_numbers.map{|k,v| v.merge({:title=>k}) }.to_json    
+  end
+
+  def top_documents_data
+    render :json=>RemoteUrl.top_documents(7, :limit => 5).to_json    
+  end
+
+  def top_notes_data
+    render :json=>RemoteUrl.top_notes(7, :limit => 5).to_json
+  end
+
+
+  def top_searches_data
+    render :json=>RemoteUrl.top_searches(7, :limit => 5).to_json
+  end
+
+  def failed_documents_data
+    render :json=>Document.failed.chronological.all(:limit => 3).map {|d| d.admin_attributes }.to_json
+  end
+
 
   def top_documents_csv
     return not_found unless request.format.csv?
     csv = DC::Statistics.top_documents_csv
     send_data csv, :type => :csv, :filename => 'documents.csv'
   end
-
   def accounts_csv
     return not_found unless request.format.csv?
     csv = DC::Statistics.accounts_csv
     send_data csv, :type => :csv, :filename => 'documents.csv'
   end
 
-  def statistics_number_data
-    render :json=>DC::Statistics.by_the_numbers.map{|k,v| v.merge({:title=>k}) }.to_json    
-  end
 
   def chart_data
     render :json => {

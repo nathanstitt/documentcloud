@@ -1,0 +1,20 @@
+
+          <tr>
+            <td class="first"><img class="doc" src="<%= line.document.get('thumbnail_url') %>" /></td>
+            <td>
+              <b><%= line.get('id') %></b><br />
+              <%= line.get('document_id') %>
+            </td>
+            <td>
+              <b><a href="<%= line.get('url') %>"><%= dc.inflector.truncate(line.get('title') || '', 50) %></a></b><br />
+              <a href="<%= line.document.publishedUrl() %><%= '#document/p' + line.get('page') + '/a' + line.get('id') %>"><%= line.document.get('access') == dc.access.PUBLIC ? dc.inflector.truncate(line.document.get('title') || '', 50) : '<i>private</i>' %></a>
+            </td>
+            <td><%= line.document.get('account_name') %></td>
+            <td><%= line.document.get('organization_name') %></td>
+            <td>
+              <%= line.get('hits') %>
+            </td>
+            <td><%= line.get('first_recorded_date') %></td>
+            <td class="last"></td>
+          </tr>
+

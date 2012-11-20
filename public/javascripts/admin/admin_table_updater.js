@@ -1,22 +1,25 @@
-dc.ui.AdminLatestDocumentLine = Backbone.View.extend({
 
+
+dc.ui.AdminTableLine = Backbone.View.extend({
   tagName: 'tr',
-
   render: function(){
-    this.$el.html( JST.latest_document_line( this.model.toJSON() ) );
+    this.$el.html( JST[this.options.tmpl]( { line: this.model } ) );
     return this;
   }
-
 });
 
 
-dc.ui.AdminLatestDocuments = Backbone.View.extend({
+
+dc.ui.AdminTableUpdater = Backbone.View.extend({
 
   initialize: function(){
     _.bindAll(this, 'appendLine', 'render','_reload' );
-    this.collection = new dc.model.DocumentSet();
-    this.collection.url =  '/admin/lastest_documents_data';
+    if ( ! this.collection )
+      this.collection = new Backbone.Collection();
+    this.collection.url = '/admin/' + this.options.action;
     this.collection.on('reset', this.render );
+    if ( this.options.comparator )
+      this.collection.comparator = this.options.comparator;
     if ( this.options.refreshEvery )
       setInterval( this._reload, 1000 * 60 * this.options.refreshEvery ); // every X minutes: millisecs * secs * minutes
     _.delay(  this._reload, Math.random()*2000 ); // just so we don't fire off all at once
@@ -27,11 +30,13 @@ dc.ui.AdminLatestDocuments = Backbone.View.extend({
   },
 
   appendLine: function( model ){
-    var line = new dc.ui.AdminLatestDocumentLine({model: model});
+    var line = new dc.ui.AdminTableLine({model: model, tmpl: this.options.tmpl });
     this.$el.append( line.render().el );
   },
 
   render: function(){
+    if ( _.isFunction( this.options.beforeRender ) )
+      this.options.beforeRender( this.collection );
     this.$el.html('');
     this.collection.each( this.appendLine );
   }

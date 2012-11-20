@@ -1,0 +1,12 @@
+
+              <% var id = line.get('aws_instance_id'); %>
+              <tr>
+                <td><%= line.get('aws_instance_type') %></td>
+                <td><%= dc.ui.Admin.prototype.INSTANCE_TAGS[id] || '<div class="icon minus" data-id="' + id + '"></div>' %></td>
+                <td><%= id %></td>
+                <td><%= line.get('aws_state') %></td>
+                <td><%= line.get('dns_name') %></td>
+                <td><%= line.get('private_dns_name') %></td>
+                <td class="last"></td>
+              </tr>
+

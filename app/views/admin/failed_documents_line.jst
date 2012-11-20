@@ -1,0 +1,16 @@
+
+              <tr>
+                <td class="first">
+                  <a target="_blank" title="open pdf" href="<%= line.get('pdf_url') %>">
+                    <%= line.get('id') %>
+                  </a>
+                </td>
+                <td><%= line.get('public') ? dc.inflector.truncate(line.get('title') || '', 50) : '<i>private</i>'  %></td>
+                <td><%= line.get('account_name') %></td>
+                <td><%= line.get('organization_name') %></td>
+                <td><%= line.get('public') ? dc.inflector.truncate(line.get('source') || '', 25) : '<i>private</i>'  %></td>
+                <td><%= line.get('page_count') %></td>
+                <td><%= line.get('created_at') %></td>
+                <td class="last"></td>
+              </tr>
+
