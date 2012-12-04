@@ -142,7 +142,7 @@ dc.ui.Toolbar = Backbone.View.extend({
   },
 
   openDocumentEmbedDialog : function() {
-    var docs = Documents.chosen();
+    var docs = Documents.selected();
     if (!docs.length) return;
     if (docs.length != 1) return dc.ui.Dialog.alert('Please select a single document in order to create the embed.');
     var doc = docs[0];

@@ -1,5 +1,12 @@
 <div class="publish_step publish_step_1 is_enabled">
 
+   <% if ( doc.isPending() ){ %>
+   <div class="pending">
+        <span class="warn">This Document is PENDING.</span>
+        If it is embedded and then accessed while it is being processed, it may not appear correctly.
+   </div>
+   <% } %>
+
   <div class="publish_section">
     <div class="text_input dark small">
       <input type="text" name="related_article" value="<%= doc.get('related_article') %>" id="publish_prepare_related_article" />

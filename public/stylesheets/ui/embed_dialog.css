@@ -7,6 +7,12 @@
   font-size: 12px;
   text-align: left;
 }
+  .document_embed_dialog .pending {
+    margin-bottom: 8px;
+  }
+  .document_embed_dialog .pending .warn {
+    color: red;
+  }
   .document_embed_dialog .custom {
     height: 360px;
     position: relative;
