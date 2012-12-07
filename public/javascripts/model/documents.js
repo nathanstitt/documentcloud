@@ -465,6 +465,12 @@ dc.model.DocumentSet = Backbone.Collection.extend({
     if (this._polling) return false;
     if (!this.pending().length) return false;
     this.startPolling();
+  },
+
+  // Documents can be in any language,
+  // but only these can be searched
+  supportedLanguages : function(){
+    return this._supported_languages || ( this._supported_languages = new dc.model.SupportedLanguageSet );
   }
 
 }, {

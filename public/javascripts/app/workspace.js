@@ -71,6 +71,7 @@ dc.controllers.Workspace = Backbone.Router.extend({
         'filter',
         'group',
         'access',
+        'language',
         'projectid'
       ],
       callbacks : {
@@ -108,6 +109,11 @@ dc.controllers.Workspace = Backbone.Router.extend({
             case 'group':
               cb(Organizations.map(function(o) { return {value: o.get('slug'), label: o.get('name') }; }));
               break;
+            case 'language':
+              cb( Documents.supportedLanguages().map(function(lang){ 
+                return { value: lang.id, label: lang.get('shortName') };
+              }) );
+              break;
             case 'document':
               cb(Documents.map(function(d){ return {value: d.canonicalId(), label: d.get('title')}; }));
               break;
@@ -131,6 +137,7 @@ dc.controllers.Workspace = Backbone.Router.extend({
             { label: 'filter',        category: '' },
             { label: 'group',         category: '' },
             { label: 'access',        category: '' },
+            { label: 'language',      category: '' },
             { label: 'projectid',     category: '' }
             // Entities
             // { label: 'city',          category: '' },

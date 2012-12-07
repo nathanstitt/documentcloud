@@ -59,9 +59,9 @@
         Language:
       </label>
       <select name="language" class="document_language" id="document_language_<%= model.id %>">
-        <option value="en" selected="true">English</option>
-        <option value="es">Español/Spanish</option>
-        <option value="fr">Français/French</option>
+      <% Documents.supportedLanguages().each( function(lang){ %>
+       <option value="<%= lang.id %>"<%= lang.isDefault() ? ' selected="true"' : '' %>><%= lang.get('name') %></option>
+      <% }) %>
       </select>
     </div>
 

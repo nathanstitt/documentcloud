@@ -20,7 +20,7 @@ module DC
 
       EMPTY_PAGINATION = {:page => 1, :per_page => 0}
 
-      attr_reader   :text, :fields, :projects, :accounts, :groups, :project_ids, :doc_ids, :filters, :access, :attributes, :data, :conditions, :results, :solr
+      attr_reader   :text, :fields, :projects, :accounts, :groups, :project_ids, :doc_ids, :language, :filters, :access, :attributes, :data, :conditions, :results, :solr
       attr_accessor :page, :per_page, :order, :from, :to, :total
 
       # Queries are created by the Search::Parser, which sets them up with the
@@ -36,6 +36,7 @@ module DC
         @project_ids            = opts[:project_ids]  || []
         @doc_ids                = opts[:doc_ids]      || []
         @attributes             = opts[:attributes]   || []
+        @language               = opts[:language]     || []
         @filters                = opts[:filters]      || []
         @data                   = opts[:data]         || []
         @from, @to, @total      = nil, nil, nil
@@ -46,7 +47,7 @@ module DC
       end
 
       # Series of attribute checks to determine the kind and state of query.
-      [:text, :fields, :projects, :accounts, :groups, :project_ids, :doc_ids, :attributes, :data, :results, :filters, :access].each do |att|
+      [:text, :fields, :projects, :accounts, :groups, :project_ids, :doc_ids, :attributes, :data, :results, :language, :filters, :access].each do |att|
         class_eval "def has_#{att}?; @has_#{att} ||= @#{att}.present?; end"
       end
 
@@ -69,6 +70,7 @@ module DC
         build_projects     if     has_projects?
         build_doc_ids      if     has_doc_ids?
         build_attributes   if     has_attributes?
+        build_language     if     has_language?
         build_filters      if     has_filters?
         # build_facets       if     @include_facets
         build_access       unless @unrestricted
@@ -272,6 +274,12 @@ module DC
           @sql << 'documents.organization_id in (?)'
           @interpolations << ids
         end
+      end
+
+      # Generate the SQL to match document language attribute.
+      def build_language
+        @sql << 'documents.language = ?'
+        @interpolations << @language
       end
 
       # Generate the Solr to match document attributes.

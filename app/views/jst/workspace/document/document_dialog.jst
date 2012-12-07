@@ -66,8 +66,8 @@
     Language:
   </label>
   <select name="language" class="document_access attribute" id="document_edit_language">
-    <option value="en">English</option>
-    <option value="es">Español/Spanish</option>
-    <option value="fr">Français/French</option>
+      <% Documents.supportedLanguages().each( function(lang){ %>
+       <option value="<%= lang.id %>"<%= lang.isDefault() ? ' selected="true"' : '' %>><%= lang.get('name') %></option>
+      <% }) %>
   </select>
 </div>
