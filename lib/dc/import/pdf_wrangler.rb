@@ -12,14 +12,18 @@ module DC
         Dir.mktmpdir do |temp_dir|
           path = file.path
           original_filename = filename || file.original_filename
+          mime_type = `file -b --mime-type #{Shellwords.shellescape(original_filename)}`.chomp
           ext  = File.extname(original_filename).downcase
           name = File.basename(original_filename, File.extname(original_filename)).gsub(/[^a-zA-Z0-9_\-.]/, '-').gsub(/-+/, '-') + ext
-          if ext == ".pdf" && File.extname(path) != ".pdf"
-            new_path = File.join(temp_dir, name)
-            FileUtils.mv(path, new_path)
-            path = new_path
+
+          # If the file is a PDF with an incorrect extension, rename it
+          if 'application/pdf' == mime_type && '.pdf' != File.extname(path).downcase
+            new_name = File.join( temp_dir, File.basename(name) + '.pdf' )
+            Rails.logger.debug "File is a PDF with extension #{File.extname(path)}, renaming to #{new_name}"
+            FileUtils.mv(path, new_name )
+            path = new_name
           end
-          return yield(path) if ext == ".pdf"
+          return yield(path) if 'application/pdf' == mime_type
           begin
             doc  = File.join(temp_dir, name)
             FileUtils.cp(path, doc)
