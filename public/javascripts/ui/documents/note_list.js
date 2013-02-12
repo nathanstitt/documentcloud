@@ -52,7 +52,8 @@ dc.ui.NoteList = Backbone.View.extend({
     this.$el.empty();
 
     var ordered = this.collection.sortBy(this._updatedComparator);
-    if ( this.collection.length ){ // FIXME add isModerator check here
+
+    if ( ordered.length ){ // FIXME add isModerator check here
       this.renderModeration( ordered );
     }
 

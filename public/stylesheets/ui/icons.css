@@ -55,6 +55,19 @@
   width: 10px; height: 10px;
   background-image: url(/images/embed/icons/plus.png);
 }
+
+.icon.moderate {
+  height: 25px;
+  cursor: pointer;
+}
+  .icon.moderate.remove {
+    background-image: url(/images/embed/icons/thumb_down.png);
+
+  }
+  .icon.moderate.approve {
+    background-image: url(/images/embed/icons/thumb_up.png);
+  }
+
 .icon.edit_glyph,
 .DV-showEdit {
   background-position: center 0;

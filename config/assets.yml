@@ -13,6 +13,7 @@ javascripts:
     - public/javascripts/vendor/jquery.ui.mouse.js
     - public/javascripts/vendor/jquery.ui.sortable.js
     - public/javascripts/vendor/jquery.ui.autocomplete.js
+    - public/javascripts/vendor/jQDateRangeSlider-min.js
     - public/javascripts/vendor/*.js
     - public/javascripts/lib/*.js
     - public/javascripts/model/*.js
@@ -64,3 +65,5 @@ stylesheets:
     - public/stylesheets/pages/viewer_editing.css
   ie_only:
     - public/stylesheets/common/ie.css
+
+

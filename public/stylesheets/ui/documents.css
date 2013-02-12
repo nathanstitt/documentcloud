@@ -294,13 +294,36 @@
   display: none;
   padding-bottom: 5px;
 }
+  .document .notes .moderation {
+    margin-top: 30px;
+    padding-bottom: 20px;
+  }
+    .document .notes .moderation .title {
+      font-weight:bold;
+      float: left;
+      margin-right: 20px;
+    }
+    .document .notes .moderation .minibutton.default {
+      position: relative;
+      top: -10px;
+    }
+
+    .document .notes .moderation .dateslider {
+      margin-top:30px;
+    }
+
+  .document .notes .moderate_tools {
+    float: left;
+    width: 16px;
+  }
+
   .document.has_notes .notes {
     display: block;
   }
   .note {
     background: #fff;
     position: relative;
-    margin: 20px 0 0 0;
+    margin: 0 0 20px 25px;
     padding: 10px;
     font: 12px/18px Helvetica, Arial;
     color: #333;
@@ -308,6 +331,7 @@
     -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px;
     box-shadow: 1px 2px 3px #bbb; -webkit-box-shadow: 1px 2px 3px #bbb; -moz-box-shadow: 1px 2px 3px #bbb;
   }
+
     .note .edit, .note .display {
       display: none;
     }
