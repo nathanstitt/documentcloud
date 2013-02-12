@@ -52,7 +52,7 @@ dc.ui.Document = Backbone.View.extend({
     this._currentPage = 0;
     this._showingPages = false;
     this.setMode(this.model.get('annotation_count') ? 'owns' : 'no', 'notes');
-    _.bindAll(this, '_onDocumentChange', '_onDrop', '_addNote', '_renderNotes',
+    _.bindAll(this, '_onDocumentChange', '_onDrop',
       '_renderPages', '_renderEntities', '_setSelected', 'viewDocuments',
       'viewPublishedDocuments', 'openDialog', 'setAccessLevelAll', 'viewEntities',
       'hideNotes', 'viewPages', 'viewChosenPages', 'deleteDocuments',
@@ -62,8 +62,8 @@ dc.ui.Document = Backbone.View.extend({
     this.model.bind('focus', this.focus);
     this.model.bind('view:pages', this.viewPages);
     this.model.bind('notes:hide', this.hideNotes);
-    this.model.notes.bind('add', this._addNote);
-    this.model.notes.bind('reset', this._renderNotes);
+    this.notes = new dc.ui.NoteList({ collection: this.model.notes });
+
     this.model.entities.bind('load', this._renderEntities);
     this.model.pageEntities.bind('reset', this._renderPages);
   },
@@ -84,12 +84,16 @@ dc.ui.Document = Backbone.View.extend({
     $(this.el).html(JST['document/tile'](data));
     this._displayDescription();
     if (dc.account) this.$('.doc.icon').draggable({ghost : true, onDrop : this._onDrop});
-    this.notesEl = this.$('.notes');
+
+    this.notes.setElement( this.$('.notes') );
+    this.notes.render();
+
     this.entitiesEl = this.$('.entities');
     this.pagesEl = this.$('.pages');
     this.entitiesView = new dc.ui.SparkEntities({model: this.model, parent: this, container: this.$('.entities')});
-    this.model.notes.each(function(note){ me._addNote(note); });
+
     if (options.notes && this.model.hasLoadedNotes()) this.setMode('has', 'notes');
+
     this.setMode(dc.access.NAMES[this.model.get('access')], 'access');
     this.setMode(this.model.allowedToEdit() ? 'is' : 'not', 'editable');
     this._setSelected();
@@ -209,14 +213,16 @@ dc.ui.Document = Backbone.View.extend({
       var model = Documents.get(this.model.id);
       if (this.modes.notes == 'has') return this.setMode('owns', 'notes');
       if (model.checkBusy()) return;
+
+      this.setMode(this.model.ignoreNotes ? 'owns' : 'has', 'notes');
+
       if (model.hasLoadedNotes()) {
-        this._renderNotes();
-        return this.setMode('has', 'notes');
+        return;
       }
-      dc.ui.spinner.show('loading notes');
-      model.notes.fetch({success : function() {
-        dc.ui.spinner.hide();
-        window.scroll(0, $('#document_' + model.id).offset().top - 100);
+      model.notes.fetch({
+        success : function() {
+          dc.ui.spinner.hide();
+          window.scroll(0, $('#document_' + model.id).offset().top - 100);
       }});
     }, this);
     dc.app.paginator.mini ? dc.app.paginator.toggleSize(next, this.model) : next();
@@ -413,23 +419,6 @@ dc.ui.Document = Backbone.View.extend({
   _onDocumentChange : function() {
     if (this.model.hasChanged('selected')) return;
     this.render();
-  },
-
-  // Render each of a document's notes, which have already been fetched.
-  _addNote : function(note) {
-    var noteView = new dc.ui.Note({
-      model : note,
-      collection : this.model.notes
-    });
-    this.notesEl.append(noteView.render().el);
-    noteView.center();
-  },
-
-  // Re-renders the notes when the notes are refreshed.
-  _renderNotes : function() {
-    this.notesEl.empty();
-    this.model.notes.each(this._addNote);
-    this.setMode(this.model.ignoreNotes ? 'owns' : 'has', 'notes');
   },
 
   // Re-renders the entities when the entities are refreshed.
