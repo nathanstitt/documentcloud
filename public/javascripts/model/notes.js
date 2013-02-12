@@ -29,6 +29,10 @@ dc.model.Note = Backbone.Model.extend({
       height: css[2] - css[0],
       width:  css[1] - css[3]
     };
+  },
+
+  updatedAt: function(){
+    return new Date( Date.parse( this.get('updated_at') ) );
   }
 
 });
