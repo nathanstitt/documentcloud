@@ -61,7 +61,7 @@
   cursor: pointer;
 }
   .icon.moderate.remove {
-    background-image: url(/images/embed/icons/thumb_down.png);
+    background-image: url(/images/embed/icons/delete.png);
 
   }
   .icon.moderate.approve {

@@ -13,7 +13,7 @@ dc.ui.NoteList = Backbone.View.extend({
     _.bindAll( this, 'render','_addNote');
     this.collection.bind('reset', this.render );
     this.collection.bind('add', this._addNote);
-    
+    this.collection.bind('remove', this._onRemoveNote);
 
   },
 
@@ -26,6 +26,10 @@ dc.ui.NoteList = Backbone.View.extend({
   },
 
 
+  _onRemoveNote: function(ev,data){
+    this.renderModeration( this.collection.sortBy(this._updatedComparator) );
+  },
+
   // Render each of a document's notes, which have already been fetched.
   _addNote : function(note) {
     var noteView = new dc.ui.Note({
@@ -35,8 +39,6 @@ dc.ui.NoteList = Backbone.View.extend({
 
     // if isModerator = note is shared with you or you are a member of the organization
     // 
-
-    this.$('.filtered_notes').append( JST["document/note_moderation_tools"]() );
 
     this.$('.filtered_notes').append(noteView.render().el);
 
@@ -48,15 +50,13 @@ dc.ui.NoteList = Backbone.View.extend({
   },
 
   render: function(){
-
-    this.$el.empty();
+    this.$el.html( JST["document/notes_listing"]() );
 
     var ordered = this.collection.sortBy(this._updatedComparator);
 
     if ( ordered.length ){ // FIXME add isModerator check here
       this.renderModeration( ordered );
     }
-
 
     this.renderNotes( ordered );
 
@@ -71,7 +71,8 @@ dc.ui.NoteList = Backbone.View.extend({
 
   renderModeration: function( ordered ){
 
-    this.$el.append( JST["document/notes_listing"]() );
+    this.$('.moderation').html( JST["document/note_moderation_tools"]() );
+
     var minmax = {
       min: _.first( ordered ).updatedAt(),
       max: _.last( ordered ).updatedAt()

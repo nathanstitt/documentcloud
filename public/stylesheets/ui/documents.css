@@ -314,7 +314,7 @@
 
   .document .notes .moderate_tools {
     float: left;
-    width: 16px;
+    width: 20px;
   }
 
   .document.has_notes .notes {
@@ -323,13 +323,9 @@
   .note {
     background: #fff;
     position: relative;
-    margin: 0 0 20px 25px;
-    padding: 10px;
+    margin: 0 0 20px 0;
     font: 12px/18px Helvetica, Arial;
     color: #333;
-    border: 3px solid #ffe325;
-    -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px;
-    box-shadow: 1px 2px 3px #bbb; -webkit-box-shadow: 1px 2px 3px #bbb; -moz-box-shadow: 1px 2px 3px #bbb;
   }
 
     .note .edit, .note .display {
@@ -366,8 +362,12 @@
       border-color: #6BC2F8;
     }
     .note .note_contents {
+      border: 3px solid #ffe325;
+      -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px;
+      box-shadow: 1px 2px 3px #bbb; -webkit-box-shadow: 1px 2px 3px #bbb; -moz-box-shadow: 1px 2px 3px #bbb;
       position: relative;
       overflow: hidden;
+      padding: 10px;
     }
       .note .note_title {
         color: #000;

@@ -10,13 +10,15 @@ dc.ui.Note = Backbone.View.extend({
     'click .cancel_note':      'cancelNote',
     'click .save_note':        'saveNote',
     'click .save_draft_note':  'saveNote',
-    'click .delete_note':      'deleteNote'
+    'click .delete_note':      'deleteNote',
+    'click .remove.moderate':  'performDeletion',
+    'click .approve.moderate': 'approveNote'
   },
 
   // Re-render the note when saved.
   constructor : function(options) {
     Backbone.View.call(this, options);
-    _.bindAll(this, 'render');
+    _.bindAll(this, 'render','performDeletion');
     this.model.bind('change', this.render);
   },
 
@@ -92,16 +94,25 @@ dc.ui.Note = Backbone.View.extend({
     this.render();
   },
 
+  
   // Sends a server request destroying the note model on the document. Also updates
   // the document model with [assumed] correct number of notes.
-  deleteNote : function() {
-    dc.ui.Dialog.confirm('Are you sure you want to delete this note?', _.bind(function() {
-      this.model.destroy({success : _.bind(function() {
+  // This is called by either the moderation click or after the 'are you sure dialog'
+  performDeletion: function(){
+    this.model.destroy({success : _.bind(function() {
         $(this.el).remove();
         this.model.document().decrementNotes();
       }, this)});
       return true;
-    }, this));
+  },
+
+  approveNote: function(){
+    this.model.markApproved();
+  },
+
+  // prompt for assurance, then delete
+  deleteNote : function() {
+    dc.ui.Dialog.confirm('Are you sure you want to delete this note?', this.performDeletion );
   }
 
 });
