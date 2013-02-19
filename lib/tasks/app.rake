@@ -31,7 +31,12 @@ namespace :app do
 
   desc "Update the Rails application"
   task :update do
+    mtime = File.exists?('Gemfile') ? File.mtime('Gemfile') : Time.at(0)
     sh 'git pull'
+    # only bundle if Gemfile was updated
+    if $BUNDLE_RUN_UPDATE && File.exists?('Gemfile') && File.mtime('Gemfile') > mtime
+      sh 'bundle install --quiet --deployment --without development test'
+    end
     sleep 0.2
   end
 
