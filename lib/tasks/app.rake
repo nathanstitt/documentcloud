@@ -19,6 +19,10 @@ namespace :app do
   task :restart do
     sh "touch tmp/restart.txt"
   end
+  
+  task :bundle do
+    sh "bundle install --deployment --without development test"
+  end
 
   task :warm do
     secrets = YAML.load_file("#{Rails.root}/secrets/secrets.yml")[RAILS_ENV]
