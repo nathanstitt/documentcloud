@@ -100,6 +100,7 @@ def remote(commands, machines)
   conf = configuration
   todo = []
   todo << "cd #{conf[:dir]}"
+  todo << "if [ -e Gemfile ]; then bundle install --quiet --deployment --without development test; fi"
   todo << "rake #{RAILS_ENV} #{commands.join(' ')}"
   machines.each do |host|
     puts "\n-- #{host} --"

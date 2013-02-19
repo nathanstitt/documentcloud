@@ -1,9 +1,7 @@
 gem 'rails',          '~>2.3.17'
+gem 'rake'
 
-# Gems:
 gem 'json',           '>= 1.7.7'
-
-
 gem 'nokogiri',       '>= 1.4.4'
 gem 'calais',         '>= 0.0.11'
 gem 'rest-client',    '>= 1.0.3',  :require => 'rest_client'
