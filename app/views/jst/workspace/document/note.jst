@@ -1,7 +1,14 @@
 <div class="moderate_tools" style="">
+<% if ( ! note.isApproved() ) { %>
   <div class="approve moderate icon display" title="Approve"></div>
+<% } %>
   <div class="remove moderate icon  display" title="Remove"></div>
 </div>
+<% if ( note.isApproved() ) { %>
+<div class="moderation_approved">
+APPROVED: <%= note.get('moderation_date') %>
+</div>
+<% } %>
 <div class="note_contents">
   <div class="note_title display">
     <span class="<% if (!disableLinks) { %>title_link<% } %>"><%= note.get('title') %> <span class="page_number">(p. <%= note.get('page') %>)</span></span>

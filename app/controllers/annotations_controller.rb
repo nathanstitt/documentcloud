@@ -62,6 +62,18 @@ class AnnotationsController < ApplicationController
     json anno
   end
 
+  # marke annotations as approved by a moderator
+  def approve
+    Annotation.find(:all,:conditions=>['id = (?)', params[:annotation_ids] ] ).each do | note |
+      if !current_account.allowed_to_edit?( note )
+        note.errors.add_to_base "You don't have permission to update the note."
+        return json(note, 403)
+      end
+      note.mark_approved
+    end
+    render :nothing=>true
+  end
+
   def destroy
     maybe_set_cors_headers
     return not_found unless anno = current_annotation

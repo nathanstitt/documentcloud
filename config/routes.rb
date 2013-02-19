@@ -70,7 +70,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   # Document representations and (private) sub-resources.
-  map.resources  :documents, :has_many => [:annotations],
+  map.resources  :documents, {
     :member => {
       :search                 => :get,
       :remove_pages           => :post,
@@ -94,6 +94,9 @@ ActionController::Routing::Routes.draw do |map|
       :published    => :get,
       :unpublished  => :get
     }
+  } do | documents |
+    documents.resources :annotations, :collection=>{ :approve=>:post }
+  end
 
   map.pdf        "/documents/:id/:slug.pdf",            :controller => :documents, :action => :send_pdf
   map.full_text  "/documents/:id/:slug.txt",            :controller => :documents, :action => :send_full_text

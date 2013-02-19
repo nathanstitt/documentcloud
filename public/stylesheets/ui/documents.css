@@ -338,6 +338,19 @@
     .note .access_select {
       float: right;
     }
+    .note .moderation_approved {
+        background-color: lightgray;
+        color: red;
+        font-family: caption;
+        font-size: 20px;
+        left: 30px;
+        padding: 3px;
+        position: absolute;
+        top: 50px;
+        transform: rotate(-15deg);
+        z-index: 10;
+        box-shadow: 3px 3px 5px #888888;
+    }
     .note .annotation_author {
       float: right;
       font-size: 11px;

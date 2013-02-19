@@ -19,7 +19,7 @@ dc.ui.NoteList = Backbone.View.extend({
 
   onValuesChanged: function( ev, data ){
     var selected = this.collection.filter( function(note){
-      return ( note.updatedAt() >= data.values.min && note.updatedAt() <= data.values.max );
+      return ( note.createdAt() >= data.values.min && note.createdAt() <= data.values.max );
     });
 
     this.renderNotes( selected );
@@ -27,7 +27,7 @@ dc.ui.NoteList = Backbone.View.extend({
 
 
   _onRemoveNote: function(ev,data){
-    this.renderModeration( this.collection.sortBy(this._updatedComparator) );
+    this.renderModeration( this.collection.sortBy(this._createdComparator) );
   },
 
   // Render each of a document's notes, which have already been fetched.
@@ -45,14 +45,14 @@ dc.ui.NoteList = Backbone.View.extend({
     noteView.center();
   },
 
-  _updatedComparator: function( note ){
-    return note.updatedAt();
+  _createdComparator: function( note ){
+    return note.createdAt();
   },
 
   render: function(){
     this.$el.html( JST["document/notes_listing"]() );
 
-    var ordered = this.collection.sortBy(this._updatedComparator);
+    var ordered = this.collection.sortBy(this._createdComparator);
 
     if ( ordered.length ){ // FIXME add isModerator check here
       this.renderModeration( ordered );
@@ -74,8 +74,8 @@ dc.ui.NoteList = Backbone.View.extend({
     this.$('.moderation').html( JST["document/note_moderation_tools"]() );
 
     var minmax = {
-      min: _.first( ordered ).updatedAt(),
-      max: _.last( ordered ).updatedAt()
+      min: _.first( ordered ).createdAt(),
+      max: _.last( ordered ).createdAt()
     };
     this.$('.dateslider').dateRangeSlider({
       arrows:false,

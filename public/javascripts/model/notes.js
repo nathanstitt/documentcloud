@@ -31,8 +31,14 @@ dc.model.Note = Backbone.Model.extend({
     };
   },
 
-  updatedAt: function(){
-    return new Date( Date.parse( this.get('updated_at') ) );
+  createdAt: function(){
+    return new Date( Date.parse( this.get('created_at') ) );
+  },
+  markApproved: function(){
+    this.collection.markApproved( [this] );
+  },
+  isApproved: function(){
+    return !! this.get('moderation_date');
   }
 
 });
@@ -51,6 +57,18 @@ dc.model.NoteSet = Backbone.Collection.extend({
 
   unrestricted : function() {
     return this.filter(function(note){ return note.get('access') != 'private'; });
+  },
+
+  markApproved: function( models ){
+    if ( ! models ){
+      models = this.models;
+    }
+    var ids = _.pluck( models, 'id' );
+    
+    $.post( this.url()+'/approve', {
+      annotation_ids: ids
+    });
+    
   }
 
 });
