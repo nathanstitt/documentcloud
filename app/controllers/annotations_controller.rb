@@ -64,14 +64,14 @@ class AnnotationsController < ApplicationController
 
   # marke annotations as approved by a moderator
   def approve
-    Annotation.find(:all,:conditions=>['id = (?)', params[:annotation_ids] ] ).each do | note |
+    Annotation.find(:all,:conditions=>['id in (?)', params[:annotation_ids] ] ).each do | note |
       if !current_account.allowed_to_edit?( note )
         note.errors.add_to_base "You don't have permission to update the note."
         return json(note, 403)
       end
       note.mark_approved
     end
-    render :nothing=>true
+    json current_document.annotations_with_authors(current_account)
   end
 
   def destroy
