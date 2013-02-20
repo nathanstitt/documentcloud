@@ -70,11 +70,15 @@ class Organization < ActiveRecord::Base
     rows = self.connection.select_all( sql )
     accounts_map = rows.group_by{|row| row['organization_id'].to_i }
     organizations.each do | organization |
-      organization.members = accounts_map[ organization.id ].map do | account |
-        account.delete('organization_id')
-        account['slug'] = Account.make_slug( account )
-        account['hashed_email']=Digest::MD5.hexdigest( account['email'].downcase.gsub(/\s/, '') ) if account['email']
-        account
+      if accounts_map.has_key? organization.id
+        organization.members = accounts_map[ organization.id ].map do | account |
+          account.delete('organization_id')
+          account['slug'] = Account.make_slug( account )
+          account['hashed_email']=Digest::MD5.hexdigest( account['email'].downcase.gsub(/\s/, '') ) if account['email']
+          account
+        end
+      else
+        organization.members = []
       end
     end
     return organizations
