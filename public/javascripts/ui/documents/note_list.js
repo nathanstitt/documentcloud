@@ -32,9 +32,10 @@ dc.ui.NoteList = Backbone.View.extend({
   },
 
   onHideApproved: function(ev,data){
-    var selected_notes = this.collection.reject( function( note ){
-      return note.isApproved() == ev.target.checked;
-    } );
+    var selected_notes = ev.target.checked ? 
+          this.collection.reject( function( note ){
+            return note.isApproved();
+          } ) : this.collection.models;
     var ordered_notes = _.sortBy( selected_notes, this._createdComparator );
 
     this.renderNotes( ordered_notes );
