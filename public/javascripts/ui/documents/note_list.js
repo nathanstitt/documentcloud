@@ -5,7 +5,9 @@ dc.ui.NoteList = Backbone.View.extend({
   className : 'note noselect',
 
   events: {
-    'valuesChanging .moderation': 'onValuesChanged'
+    'valuesChanging .moderation' : 'onValuesChanged',
+    'change .hideapproved'       : 'onHideApproved',
+    'click .approve_all'         : 'onApproveAll'
   },
 
   constructor : function(options) {
@@ -17,6 +19,10 @@ dc.ui.NoteList = Backbone.View.extend({
 
   },
 
+  onApproveAll: function(){
+    this.collection.markApproved();
+  },
+
   onValuesChanged: function( ev, data ){
     var selected = this.collection.filter( function(note){
       return ( note.createdAt() >= data.values.min && note.createdAt() <= data.values.max );
@@ -25,9 +31,18 @@ dc.ui.NoteList = Backbone.View.extend({
     this.renderNotes( selected );
   },
 
+  onHideApproved: function(ev,data){
+    var selected_notes = this.collection.reject( function( note ){
+      return note.isApproved() == ev.target.checked;
+    } );
+    var ordered_notes = _.sortBy( selected_notes, this._createdComparator );
+
+    this.renderNotes( ordered_notes );
+    this.updateModerationControls( ordered_notes );
+  },
 
   _onRemoveNote: function(ev,data){
-    this.renderModeration( this.collection.sortBy(this._createdComparator) );
+    this.updateModerationControls( this.collection.sortBy(this._createdComparator) );
   },
 
   // Render each of a document's notes, which have already been fetched.
@@ -52,10 +67,12 @@ dc.ui.NoteList = Backbone.View.extend({
   render: function(){
     this.$el.html( JST["document/notes_listing"]() );
 
+
     var ordered = this.collection.sortBy(this._createdComparator);
 
     if ( ordered.length ){ // FIXME add isModerator check here
-      this.renderModeration( ordered );
+      this.$('.moderation').html( JST["document/note_moderation_tools"]() );
+      this.updateModerationControls( ordered );
     }
 
     this.renderNotes( ordered );
@@ -69,19 +86,23 @@ dc.ui.NoteList = Backbone.View.extend({
     _.each( notes, this._addNote );
   },
 
-  renderModeration: function( ordered ){
+  updateModerationControls: function( ordered_notes ){
+    this.$('.approve_all').toggle( !!ordered_notes.length );
+    this.$('.dateslider').toggle( ordered_notes.length > 1 );
 
-    this.$('.moderation').html( JST["document/note_moderation_tools"]() );
+    if ( ordered_notes.length > 1 ){
+      var minmax = {
+        min: _.first( ordered_notes ).createdAt(),
+        max: _.last( ordered_notes ).createdAt()
+      };
 
-    var minmax = {
-      min: _.first( ordered ).createdAt(),
-      max: _.last( ordered ).createdAt()
-    };
-    this.$('.dateslider').dateRangeSlider({
-      arrows:false,
-      bounds: minmax,
-      defaultValues: minmax
-    });
+      this.$('.dateslider').dateRangeSlider({
+        arrows:false,
+        bounds: minmax,
+        defaultValues: minmax
+      });
+    }
+
 
   }
 
