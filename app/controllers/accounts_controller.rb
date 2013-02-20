@@ -106,7 +106,7 @@ class AccountsController < ApplicationController
   def resend_welcome
     return forbidden unless current_account.admin?
     account = current_organization.accounts.find(params[:id])
-    LifecycleMailer.deliver_login_instructions account, current_account
+    account.send_login_instructions( current_account )
     json nil
   end
 
