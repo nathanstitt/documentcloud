@@ -64,9 +64,22 @@ dc.model.NoteSet = Backbone.Collection.extend({
       models = this.models;
     }
     var ids = _.pluck( models, 'id' );
-    
-    $.post( this.url()+'/approve', {
-      annotation_ids: ids
+    var me = this;
+    $.ajax({
+      type: "POST",
+      url: this.url()+'/approve',
+      data: { annotation_ids: ids },
+      dataType: 'json',
+      success: function(updated_notes){ // won't need when we upgrade backbone and have Collection#update
+        _.each( updated_notes, function( note ){
+          var existing_model = me.get( note.id );
+          if ( existing_model ){
+            existing_model.set( note );
+          } else {
+            me.add( note );
+          }
+        });
+      }
     });
     
   }
