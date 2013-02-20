@@ -19,7 +19,7 @@ namespace :app do
   task :restart do
     sh "touch tmp/restart.txt"
   end
-
+  
   task :warm do
     secrets = YAML.load_file("#{Rails.root}/secrets/secrets.yml")[RAILS_ENV]
     sh "curl -s -u #{secrets['guest_username']}:#{secrets['guest_password']} http://localhost:80 > /dev/null"
@@ -31,7 +31,12 @@ namespace :app do
 
   desc "Update the Rails application"
   task :update do
+    mtime = File.exists?('Gemfile') ? File.mtime('Gemfile') : Time.at(0)
     sh 'git pull'
+    # only bundle if Gemfile was updated
+    if $BUNDLE_RUN_UPDATE && File.exists?('Gemfile') && File.mtime('Gemfile') > mtime
+      sh 'bundle install --quiet --deployment --without development test'
+    end
     sleep 0.2
   end
 
@@ -71,8 +76,8 @@ end
 namespace :openoffice do
 
   task :start do
-    utility = RUBY_PLATFORM.match(/darwin/) ? "/Applications/OpenOffice.org.app/Contents/MacOS/soffice.bin" : "soffice"
-    sh "#{utility} -headless -accept=\"socket,host=127.0.0.1,port=8100;urp;\" -nofirststartwizard"
+    utility = RUBY_PLATFORM.match(/darwin/) ? "/Applications/LibreOffice.app/Contents/MacOS/soffice.bin" : "soffice"
+    sh "nohup #{utility} --headless --accept=\"socket,host=127.0.0.1,port=8100;urp;\" --nofirststartwizard > log/soffice.log 2>&1 & echo $! > ./tmp/pids/soffice.pid"
   end
 
 end

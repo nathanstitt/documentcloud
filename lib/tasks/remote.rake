@@ -95,12 +95,25 @@ def configuration
   end
 end
 
-def remote(commands, machines)
+
+
+
+
+def bundle_update
+  begin
+    $BUNDLE_RUN_UPDATE=true
+    yield
+  ensure
+    $BUNDLE_RUN_UPDATE=false
+  end
+end
+
+def remote(commands, machines, options={})
   commands = [commands].flatten
   conf = configuration
   todo = []
   todo << "cd #{conf[:dir]}"
-  todo << "rake #{RAILS_ENV} #{commands.join(' ')}"
+  todo << "bundle exec rake #{RAILS_ENV} #{commands.join(' ')}"
   machines.each do |host|
     puts "\n-- #{host} --"
     system "ssh -A -t -i #{conf[:key]} #{conf[:user]}@#{host} '#{todo.join(' && ')}'"
