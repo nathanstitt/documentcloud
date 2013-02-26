@@ -144,6 +144,7 @@ ActionController::Routing::Routes.draw do |map|
     home.opensource     '/opensource',    :action => 'opensource'
     home.about          '/about',         :action => 'about'
     home.contact        '/contact',       :action => 'contact'
+    home.apply          '/apply',         :action => 'apply'
     home.help           '/help',          :action => 'help'
     home.help           '/help/:page',    :action => 'help'
     home.multilanguage  '/multilanguage', :action => 'multilanguage'
