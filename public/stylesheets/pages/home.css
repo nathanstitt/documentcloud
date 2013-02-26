@@ -533,6 +533,8 @@ ol {
     text-align: center;
   }
 
+/*--------------------------------- Help ------------------------------------*/
+
 #content #help {
   font: inherit;
   display: block;
@@ -560,4 +562,24 @@ ol {
   #content #help #search_form .text_input {
     margin: 0 0 0 140px;
     width: 400px;
+  }
+
+/*--------------------------------- Apply ------------------------------------*/
+#content #apply {
+}
+
+  #content #apply .submit {
+    display: block;
+    height: 24px;
+    margin: 10px auto;
+  }
+
+  #content #apply .usage {
+    margin-top: 5px;
+    display: block;
+  }
+
+  #content #apply textarea.usage {
+    width: 100%;
+    padding: 0;
   }

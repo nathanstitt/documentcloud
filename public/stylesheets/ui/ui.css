@@ -162,6 +162,18 @@ div.text_input {
     line-height: 20px;
     width: 100%;
   }
+    div.labeled_row {
+      margin-top: 4px;
+    }
+    div.labeled_row label {
+      float: left;
+      width: 145px;
+      margin-top: 4px;
+      text-align: right
+    }
+    div.labeled_row div.text_input {
+      margin-left: 150px;
+    }
     div.text_input.small input,
     div.text_input.light input,
     div.text_input.small .placeholder {
