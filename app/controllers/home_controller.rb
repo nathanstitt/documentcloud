@@ -29,6 +29,12 @@ class HomeController < ApplicationController
     @contributors = yaml['contributors']
   end
 
+  def apply
+    @application = Application.new( params[:application] )
+    if request.post? && @application.save
+        render :action=>'application_received'
+    end
+  end
 
   private
 

@@ -15,6 +15,15 @@
     <p>If that describes you, please fill out the form below. We ask two things of prospective users: permission to add your newsroom to our public list of <a href="/contributors">document contributors</a> (you'd be in <a href="/contributors">excellent company</a>) and a note (email is just fine) from your editor or editorial director confirming that they understand that you'll be contributing documents to a public catalog and approve your participation in DocumentCloud. Once we get the go-ahead from your editor, expect to be up and running within two weeks. </p>
 
     <hr>
+    <% if @application.errors.any? %>
+      <div class="form_error">
+        <% @application.errors.full_messages.each do | error | -%>
+        <span>
+          <%= error.html_safe %>
+        </span>
+        <% end %>
+      </div>
+    <% end %>
 
     <form id="application_form" action="<%= DC.server_root(:force_ssl => true) %>/apply" method="POST">
       <%= token_tag %>
@@ -23,7 +32,7 @@
         <label for="name">Name:</label>
         <div class="text_input light" style="">
           <div class="inner">
-            <input type="text" name="application[name]" placeholder="Your Name" id="name" />
+            <input type="text" name="application[name]" placeholder="Your Name" id="name" value="<%= @application.name %>"/>
           </div>
         </div>
       </div>
@@ -32,7 +41,7 @@
         <label for="email">Email:</label>
         <div class="text_input first light">
           <div class="inner">
-            <input type="text" name="application[email]" placeholder="Email" id="email" />
+            <input type="text" name="application[email]" placeholder="Email" id="email" value="<%= @application.email %>" />
           </div>
         </div>
       </div>
@@ -41,13 +50,13 @@
         <label for="organization">News Organization:</label>
         <div class="text_input first light">
           <div class="inner">
-            <input type="text" name="application[organization]" placeholder="Organization" id="organization" />
+            <input type="text" name="application[organization]" placeholder="Organization" id="organization" value="<%= @application.organization %>" />
           </div>
         </div>
       </div>
 
       <label class="usage" for="usage">I want to use DocumentCloud for:</label>
-      <textarea class="text_area usage" name="application[usage]"></textarea>
+      <textarea class="text_area usage" name="application[usage]"><%= @application.usage %></textarea>
 
       <input type="submit" class="minibutton submit" value="Submit Application"/>
 
