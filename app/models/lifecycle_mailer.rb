@@ -26,6 +26,14 @@ class LifecycleMailer < ActionMailer::Base
                :organization_name => organization.name
   end
 
+  def verify_application_email( application )
+    subject    "Please verify your email address for your DocumentCloud Account"
+    from       SUPPORT
+    recipients application.email
+    body       :application => application,
+               :key         => application.security_key.key
+  end
+
   # Mail instructions for a document review, with a secure link to the
   # document viewer, where the user can annotate the document.
   def reviewer_instructions(documents, inviter_account, reviewer_account=nil, message=nil, key='')

@@ -36,6 +36,14 @@ class HomeController < ApplicationController
     end
   end
 
+  def verify_application
+    key = SecurityKey.find_by_key(params[:key])
+    flash[:error]= 'The account is invalid, or has already been activated.' and return render unless key
+    application = key.securable
+    key.destroy
+    application.validated = true
+    application.save
+  end
   private
 
   def date_sorted(list)

@@ -148,6 +148,7 @@ ActionController::Routing::Routes.draw do |map|
     home.help           '/help',          :action => 'help'
     home.help           '/help/:page',    :action => 'help'
     home.multilanguage  '/multilanguage', :action => 'multilanguage'
+    home.verify_email   '/application/validate/:key', :action=>'verify_application'
   end
 
   # Redirects.
