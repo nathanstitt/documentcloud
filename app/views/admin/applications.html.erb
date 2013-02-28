@@ -1,0 +1,14 @@
+<%
+  @title = "Admin Dashboard :: Membership Applications"
+  @stylesheets = [:admin]
+  @javascripts = [:admin]
+  @bodyclass   = 'membership_applications'
+%>
+
+<script type="text/javascript">
+  $(function(){
+    $('#content').append( (new dc.ui.MembershipApplications( {
+      collection: new dc.model.MembershipApplicationSet( <%= Application.sorted.to_json %> )
+    } ) ).render().el);
+  });
+</script>
