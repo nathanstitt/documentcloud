@@ -1,0 +1,22 @@
+.membership_applications .controls {
+  margin-top: 20px;
+  margin-left: 30px;
+}
+
+.membership_applications .account_list {
+  width: 100%;
+  padding: 20px;
+}
+  .membership_applications .account_list .validated {
+    color: black;
+    text-align: center;
+  }
+  .membership_applications .account_list th {
+    border-bottom: 1px solid #222;
+    font-size: 11px; line-height: 25px;
+  }
+
+
+.membership_applications .totals {
+  float: right;
+}
