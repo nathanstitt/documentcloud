@@ -1,3 +1,4 @@
+
 .membership_applications .controls {
   margin-top: 20px;
   margin-left: 30px;
@@ -14,9 +15,19 @@
   .membership_applications .account_list th {
     border-bottom: 1px solid #222;
     font-size: 11px; line-height: 25px;
+    font-weight: bold;
   }
-
+  .membership_applications .account_list td {
+    color: black;
+  }
+  .membership_applications .account_list td.email a {
+    text-decoration: underline;
+  }
+    .membership_applications .account_list td.email a:hover {
+      text-decoration: none;
+    }
 
 .membership_applications .totals {
   float: right;
+  margin-right: 20px;
 }
