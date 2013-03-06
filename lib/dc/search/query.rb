@@ -278,8 +278,14 @@ module DC
 
       # Generate the SQL to match document language attribute.
       def build_language
-        @sql << 'documents.language = ?'
-        @interpolations << @language
+        if needs_solr?
+          @solr.build do
+            fulltext @language
+          end
+        else
+          @sql << 'documents.language = ?'
+          @interpolations << @language
+        end
       end
 
       # Generate the Solr to match document attributes.
@@ -292,8 +298,8 @@ module DC
           end
         end
       end
-      
-      # Generate the Solr or SQL to match user-data queries. If the value 
+
+      # Generate the Solr or SQL to match user-data queries. If the value
       # is "*", assume that any document that contains the key will do.
       def build_data
         data   = @data
@@ -318,7 +324,7 @@ module DC
           end
         else
           hash = {}
-          data.each do |datum| 
+          data.each do |datum|
             if datum.value == '*'
               @sql << 'defined(docdata.data, ?)'
               @interpolations << datum.kind
