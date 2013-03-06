@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/support/setup'
 
 class DocumentImport < CloudCrowd::Action
-  
+
   # Split a document import job into two parallel parts ... one for the image
   # generation and one for the text extraction.
   # If the Document was not originally uploaded, but was passed as a remote URL
@@ -95,7 +95,7 @@ class DocumentImport < CloudCrowd::Action
       end
     else
       begin
-        opts = {:pages => 'all', :output => 'text', :language => ocr_language(document.language)}
+        opts = {:pages => 'all', :output => 'text', :language => document.language }
         opts[:ocr] = true if options['force_ocr']
         opts[:clean] = false unless opts[:language] == 'eng'
         Docsplit.extract_text(@pdf, opts)
@@ -174,13 +174,6 @@ class DocumentImport < CloudCrowd::Action
 
   def access
     options['access'] || DC::Access::PRIVATE
-  end
-  
-  def ocr_language(two_letter)
-    {
-      'en' => 'eng',
-      'es' => 'spa'
-    }[two_letter] || 'eng'
   end
 
 end
