@@ -1,5 +1,5 @@
 
-dc.model.MembershipApplication = Backbone.Model.extend({
+dc.model.PendingMembership = Backbone.Model.extend({
 
   gravatarUrl : function(size) {
     var hash = this.get('hashed_email');
@@ -8,12 +8,13 @@ dc.model.MembershipApplication = Backbone.Model.extend({
   }
 
 
+
 });
 
 
-dc.model.MembershipApplicationSet = Backbone.Collection.extend({
-  model : dc.model.MembershipApplication,
-  url   : '/admin/applications.json'
+dc.model.PendingMembershipSet = Backbone.Collection.extend({
+  model : dc.model.PendingMembership,
+  url   : '/admin/pending_memberships'
 
 
 });

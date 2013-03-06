@@ -1,15 +1,32 @@
-dc.ui.MembershipApplication = Backbone.View.extend({
+dc.ui.PendingMembership = Backbone.View.extend({
 
   tagName: 'tr',
+  events: {
+    'blur textarea'           : 'updateApplication',
+    'blur input'              : 'updateApplication',
+    'click .minibutton.setup' : 'setupApplication'
+  },
+
+  updateApplication: function(){
+    this.model.save({
+      'notes': this.$('textarea').val(),
+      'editor': this.$('input.editor').val()
+    })
+  },
+
+  setupApplication: function(){
+    window.location = '/admin/signup?pending_membership_id=' + this.model.id
+  },
 
   render: function(){
-    this.$el.html( JST['membership_application_row']( this.model.toJSON() ) );
+    this.$el.html( JST['pending_membership_row']( this.model.toJSON() ) );
 
+    // <img class="avatar" src="<%= dc.model.Account.prototype.DEFAULT_AVATAR %>" width="25" height="25" />
     // commented out for speed while testing
     // var img = new Image();
     // var src = this.model.gravatarUrl( 25 );
-    // img.onload = _.bind(function() { 
-    //   this.$('img.avatar').attr({src : src}); 
+    // img.onload = _.bind(function() {
+    //   this.$('img.avatar').attr({src : src});
     // }, this);
     // img.src = src;
     return this;
@@ -17,7 +34,7 @@ dc.ui.MembershipApplication = Backbone.View.extend({
 
 });
 
-dc.ui.MembershipApplications = Backbone.View.extend({
+dc.ui.PendingMemberships = Backbone.View.extend({
 
   attributes:{
     'class': 'membership_applications'
@@ -47,13 +64,13 @@ dc.ui.MembershipApplications = Backbone.View.extend({
   },
 
   prepend: function( model ){
-    var application = new dc.ui.MembershipApplication( { model: model });
+    var application = new dc.ui.PendingMembership( { model: model });
     this.$('tbody').prepend( application.render().el );
   },
 
   render: function() {
 
-    this.$el.html( JST['membership_applications']() );
+    this.$el.html( JST['pending_memberships']() );
 
     this.collection.each( this.prepend );
     this.$('.totals .showing').html( this.collection.length );
