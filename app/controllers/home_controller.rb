@@ -30,7 +30,7 @@ class HomeController < ApplicationController
   end
 
   def apply
-    @application = Application.new( params[:application] )
+    @application = PendingMembership.new( params[:application] )
     if request.post? && @application.save
         render :action=>'application_received'
     end
