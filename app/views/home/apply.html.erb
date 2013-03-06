@@ -11,7 +11,7 @@
     <p>If you’re interested in using DocumentCloud, just ask. <i>Okay, so it isn't quite that simple:</i></p>
 
     <p>DocumentCloud accounts are all newsroom based. DocumentCloud is available to anyone who reports on primary source documents. For the most part our users are journalists, but if you are doing document based investigative reporting we'd love to have you join us, even if you aren't a newsroom-based journalist in the conventional sense. If you're not in a traditional newsroom, please do show us some of your reporting and tell us a little bit about the kind of documents you're working with.</p>
-    
+
     <p>If that describes you, please fill out the form below. We ask two things of prospective users: permission to add your newsroom to our public list of <a href="/contributors">document contributors</a> (you'd be in <a href="/contributors">excellent company</a>) and a note (email is just fine) from your editor or editorial director confirming that they understand that you'll be contributing documents to a public catalog and approve your participation in DocumentCloud. Once we get the go-ahead from your editor, expect to be up and running within two weeks. </p>
 
     <hr>
@@ -29,11 +29,21 @@
       <%= token_tag %>
 
       <div class="labeled_row">
-        <label for="name">Name:</label>
-        <div class="text_input light" style="">
-          <div class="inner">
-            <input type="text" name="application[name]" placeholder="Your Name" id="name" value="<%= @application.name %>"/>
+        <label for="first_name">Name:</label>
+        <div class="split_fields">
+
+          <div class="text_input left light" style="">
+            <div class="inner">
+              <input type="text" name="application[first_name]" placeholder="First Name" id="first_name" value="<%= @application.first_name %>"/>
+            </div>
           </div>
+
+          <div class="text_input right light" style="">
+            <div class="inner">
+              <input type="text" name="application[last_name]" placeholder="Last Name" id="last_name" value="<%= @application.last_name %>"/>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -41,7 +51,7 @@
         <label for="email">Email:</label>
         <div class="text_input first light">
           <div class="inner">
-            <input type="text" name="application[email]" placeholder="Email" id="email" value="<%= @application.email %>" />
+            <input type="text" name="application[email]" id="email" value="<%= @application.email %>" />
           </div>
         </div>
       </div>
@@ -50,7 +60,18 @@
         <label for="organization">News Organization:</label>
         <div class="text_input first light">
           <div class="inner">
-            <input type="text" name="application[organization]" placeholder="Organization" id="organization" value="<%= @application.organization %>" />
+            <input type="text" name="application[organization_name]" id="organization" value="<%= @application.organization_name %>" />
+          </div>
+        </div>
+      </div>
+      <div class="labeled_row">
+        <label for="organization">Website of Organization:</label>
+        <% if @application.errors[:website] %>
+        <input type="checkbox" name="application[no_website]">I do not have a website
+        <% end %>
+        <div class="text_input first light">
+          <div class="inner">
+            <input type="text" name="application[website]" id="website" value="<%= @application.website %>" />
           </div>
         </div>
       </div>
