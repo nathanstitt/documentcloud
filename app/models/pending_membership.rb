@@ -1,14 +1,18 @@
-class Application < ActiveRecord::Base
+class PendingMembership < ActiveRecord::Base
 
-  validates_presence_of   :name, :email, :organization_name, :usage
+  validates_presence_of   :first_name, :last_name, :email, :organization_name, :usage
   validates_format_of     :email, :with => DC::Validators::EMAIL
-
+  validates_presence_of   :website, :unless=>:no_website, :message=>'must be given or no website box checked'
   belongs_to :organization
   named_scope :sorted, :order=>'created_at desc'
 
   has_one  :security_key,    :dependent => :destroy, :as => :securable
 
+  attr_accessor :no_website
+
   validates_uniqueness_of :email, :case_sensitive => false, :message=>"has already applied.  Perhaps you have already submitted an application"
+
+  before_save :fixup_website
 
   after_create :send_verify_email_instructions
 
@@ -29,4 +33,12 @@ class Application < ActiveRecord::Base
         :hashed_email => hashed_email
       })
   end
+
+  private
+
+  def fixup_website
+    self.website = "http://#{website}" unless website=~/^http\:\/\//
+  end
+
+
 end
