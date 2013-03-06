@@ -85,8 +85,9 @@ class AdminController < ApplicationController
     org = Organization.create(params[:organization])
     return fail(org.errors.full_messages.first) if org.errors.any?
     params[:account][:email].strip! if params[:account][:email]
-    acc = Account.create(params[:account].merge({:organization => org, :role => Account::ADMINISTRATOR}))
+    acc = Account.create(params[:account])
     return org.destroy && fail(acc.errors.full_messages.first) if acc.errors.any?
+    org.memberships.create(:account_id => acc.id, :role => Account::ADMINISTRATOR)
     acc.send_login_instructions
     if params[:pending_membership_id]
       application = PendingMembership.find(params[:pending_membership_id])
