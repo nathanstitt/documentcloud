@@ -6,6 +6,9 @@
 <div id="full_screen_form" class="full_page_background">
   <form action="/admin/signup" method="POST">
     <%= token_tag %>
+    <% if params[:pending_membership_id] %>
+    <input type="hidden" name="pending_membership_id" value="<%= params[:pending_membership_id] %>">
+    <% end %>
     <h1>Add a New Organization</h1>
     <% if @failure %>
       <div class="form_error">

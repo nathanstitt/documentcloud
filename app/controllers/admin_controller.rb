@@ -72,8 +72,15 @@ class AdminController < ApplicationController
   def signup
     unless request.post?
       @params = {:organization => {}, :account => {}}
+      if params[:pending_membership_id]
+        @application = PendingMembership.find(params[:pending_membership_id])
+        @params[:organization][:name]  = @application.organization_name
+        @params[:account][:email]      = @application.email
+        @params[:account][:first_name] = @application.first_name
+        @params[:account][:last_name]  = @application.last_name
+        return render
+      end
     end
-    return render unless request.post?
     @params = params
     org = Organization.create(params[:organization])
     return fail(org.errors.full_messages.first) if org.errors.any?
@@ -81,8 +88,23 @@ class AdminController < ApplicationController
     acc = Account.create(params[:account].merge({:organization => org, :role => Account::ADMINISTRATOR}))
     return org.destroy && fail(acc.errors.full_messages.first) if acc.errors.any?
     acc.send_login_instructions
+    if params[:pending_membership_id]
+      application = PendingMembership.find(params[:pending_membership_id])
+      application.organization = org
+      application.save
+    end
     @success = "Account Created. Welcome email sent to #{acc.email}."
     @params = {:organization => {}, :account => {}}
+  end
+
+  # endpoint for updating a membership application.
+  # Full-fledged REST support is not implemented
+  def pending_memberships
+    if request.put?
+      pending_membership = PendingMembership.find( params[:id] )
+      pending_membership.update_attributes( pick( params, :notes, :editor ) )
+      json pending_membership
+    end
   end
 
   # Endpoint for our pixel-ping application, to save our analytic data every
