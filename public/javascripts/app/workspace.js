@@ -110,8 +110,8 @@ dc.controllers.Workspace = Backbone.Router.extend({
               cb(Organizations.map(function(o) { return {value: o.get('slug'), label: o.get('name') }; }));
               break;
             case 'language':
-              cb( Documents.supportedLanguages().map(function(lang){ 
-                return { value: lang.id, label: lang.get('shortName') };
+              cb( Documents.supportedLanguages().map(function(lang){
+                return { value: lang.id, label: lang.get('name') };
               }) );
               break;
             case 'document':
