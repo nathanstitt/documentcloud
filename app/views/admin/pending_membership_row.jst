@@ -1,0 +1,12 @@
+    <td class="validated"><%= validated ? '✓' : '' %></td>
+    <td><%= new Date( Date.parse('2013-03-06T20:07:39Z') ).toDateString() %></td>
+    <td>
+      <%= first_name %> <%= last_name %>
+    </td>
+    <td class="email"><a href="mailto:<%= email %>"><%= email %></a></td>
+    <td><%= organization_name %></td>
+    <td><a href="<%= website %>"><%= website %></a></td>
+    <td><%= usage %></td>
+    <td class="editor"><input class="editor" value="<%= editor %>"></td>
+    <td class="notes"><textarea><%= notes %></textarea></td>
+    <td><div class="minibutton setup">Setup Account &raquo;</div></td>
