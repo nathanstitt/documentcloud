@@ -1,9 +1,8 @@
-<%= @application.name %> --
+<%= @application.first_name %> --
 
 Please verify that the email address you entered for your new DocumentCloud account is correct.
 
-You may do so be clicking the link below, which will take you to the DocumentCloud website.  There you can complete the
-application process.
+You may do so be clicking the link below, which will take you to the DocumentCloud website and mark your email address as valid.  Until your email is validated we cannot further process your application.
 
 <%= DC.server_root(:force_ssl => true) %>/application/validate/<%= @key %>
 
