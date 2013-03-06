@@ -2,13 +2,13 @@
   @title = "Admin Dashboard :: Membership Applications"
   @stylesheets = [:admin]
   @javascripts = [:admin]
-  @bodyclass   = 'membership_applications'
+  @bodyclass   = 'pending_memberships'
 %>
 
 <script type="text/javascript">
   $(function(){
-    $('#content').append( (new dc.ui.MembershipApplications( {
-      collection: new dc.model.MembershipApplicationSet( <%= Application.sorted.to_json %> )
+    $('#content').append( (new dc.ui.PendingMemberships( {
+      collection: new dc.model.PendingMembershipSet( <%= PendingMembership.sorted.to_json %> )
     } ) ).render().el);
   });
 </script>
