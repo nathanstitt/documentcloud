@@ -1,33 +1,52 @@
+.pending_memberships #container {
+  overflow: auto;
+}
 
-.membership_applications .controls {
+.pending_memberships .controls {
   margin-top: 20px;
   margin-left: 30px;
 }
 
-.membership_applications .account_list {
+.pending_memberships .account_list {
   width: 100%;
   padding: 20px;
 }
-  .membership_applications .account_list .validated {
+  .pending_memberships .account_list .validated {
     color: black;
     text-align: center;
   }
-  .membership_applications .account_list th {
+  .pending_memberships .account_list th {
     border-bottom: 1px solid #222;
     font-size: 11px; line-height: 25px;
     font-weight: bold;
+    padding: 3px;
   }
-  .membership_applications .account_list td {
+  .pending_memberships .account_list th:nth-child(2) {
+    text-align: center;
+  }
+  .pending_memberships .account_list td.notes {
+    padding: 0px;
+    margin: 0px;
+  }
+    .pending_memberships .account_list td.notes textarea {
+
+     }
+  .pending_memberships .account_list td {
     color: black;
+    white-space: normal;
+    padding: 5px;
   }
-  .membership_applications .account_list td.email a {
+  .pending_memberships .account_list td:last-child {
+    white-space: nowrap;
+  }
+  .pending_memberships .account_list a {
     text-decoration: underline;
   }
-    .membership_applications .account_list td.email a:hover {
+    .pending_memberships .account_list a:hover {
       text-decoration: none;
     }
 
-.membership_applications .totals {
+.pending_memberships .totals {
   float: right;
   margin-right: 20px;
 }
