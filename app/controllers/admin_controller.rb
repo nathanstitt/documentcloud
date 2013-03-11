@@ -78,8 +78,8 @@ class AdminController < ApplicationController
         @params[:account][:email]      = @application.email
         @params[:account][:first_name] = @application.first_name
         @params[:account][:last_name]  = @application.last_name
-        return render
       end
+      render and return
     end
     @params = params
     org = Organization.create(params[:organization])
