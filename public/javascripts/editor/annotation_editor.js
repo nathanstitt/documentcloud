@@ -159,7 +159,7 @@ dc.ui.AnnotationEditor = Backbone.View.extend({
   },
 
   saveAnnotation : function(anno) {
-    this[anno.unsaved ? 'createAnnotation' : 'updateAnnotation'](anno);
+    this[ anno.server_id ? 'updateAnnotation' : 'createAnnotation' ](anno);
   },
 
   // Convert an annotation object into serializable params understood by us.
@@ -174,25 +174,32 @@ dc.ui.AnnotationEditor = Backbone.View.extend({
     if (anno.location) params.location = anno.location.image;
     return _.extend(params, extra || {});
   },
-
+  displayServerError: function( xhr, status, error ){
+    dc.ui.Dialog.alert('An ' + (status||'error') + ' occurred with the note. ' +
+                       'Please contact support at support@documentcloud.org.<br/>'  +
+                       'Error message: ' + xhr.statusText
+                      );
+  },
   createAnnotation : function(anno) {
     var params = this.annotationToParams(anno);
-    $.ajax({url : this._baseURL, type : 'POST', data : params, dataType : 'json', success : _.bind(function(resp) {
-      anno.server_id = resp.id;
-      this._adjustNoteCount(1, this._kind == 'public' ? 1 : 0);
-    }, this)});
+    $.ajax({url : this._baseURL, type : 'POST', data : params, dataType : 'json', error: this.displayServerError,
+            success : _.bind(function(resp) {
+              anno.server_id = resp.id;
+              this._adjustNoteCount(1, this._kind == 'public' ? 1 : 0);
+            }, this)});
   },
 
   updateAnnotation : function(anno) {
     var url     = this._baseURL + '/' + anno.server_id;
     var params  = this.annotationToParams(anno, {_method : 'put'});
-    $.ajax({url : url, type : 'POST', data : params, dataType : 'json'});
+    $.ajax({url : url, type : 'POST', data : params, dataType : 'json', error: this.displayServerError });
   },
 
   deleteAnnotation : function(anno) {
     if (!anno.server_id) return;
     var url = this._baseURL + '/' + anno.server_id;
-    $.ajax({url : url, type : 'POST', data : {_method : 'delete'}, dataType : 'json', success : _.bind(function() {
+    $.ajax({url : url, type : 'POST', data : {_method : 'delete'}, dataType : 'json',
+            error: this.displayServerError, success : _.bind(function() {
       this._adjustNoteCount(-1, (this._kind == 'public' || anno.access == 'public') ? -1 : 0);
     }, this)});
   },
