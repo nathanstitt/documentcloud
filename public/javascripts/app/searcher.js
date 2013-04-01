@@ -210,7 +210,7 @@ dc.controllers.Searcher = Backbone.Router.extend({
   // When searching by the URL's hash value, we need to unescape first.
   searchByHash : function(query, page) {
     _.defer(_.bind(function() {
-      this.search(decodeURIComponent(query), page && parseInt(page, 10));
+      this.search(XSS.uri_decode(query), page && parseInt(page, 10));
     }, this));
   },
 
