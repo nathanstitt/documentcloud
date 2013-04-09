@@ -34,11 +34,22 @@ dc.model.Note = Backbone.Model.extend({
   createdAt: function(){
     return new Date( Date.parse( this.get('created_at') ) );
   },
-  markApproved: function(){
-    this.collection.markApproved( [this] );
-  },
   isApproved: function(){
-    return !! this.get('moderation_date');
+    return true == this.get('moderation_approval');
+  },
+  toggleModeration: function(){
+    this.set({ moderation_approval: ! this.get('moderation_approval') });
+    this.collection.updateApproval( [ this ] );
+  },
+  moderationStatus: function(){
+    var status = this.get('moderation_approval');
+    if ( true === status ){
+      return 'approved';
+    } else if ( false == status ){
+      return 'disapproved';
+    } else {
+      return 'unexamined';
+    }
   }
 
 });
@@ -59,16 +70,19 @@ dc.model.NoteSet = Backbone.Collection.extend({
     return this.filter(function(note){ return note.get('access') != 'private'; });
   },
 
-  markApproved: function( models ){
-    if ( ! models ){
-      models = this.models;
+  updateApproval: function( notes ){
+    if ( ! notes ){
+      notes = this.notes;
     }
-    var ids = _.pluck( models, 'id' );
+    var annotations ={};
+    _.each( notes, function(note){
+      annotations[ note.id ] = ( note.isApproved() ? '1' : '0' );
+    });
     var me = this;
     $.ajax({
       type: "POST",
       url: this.url()+'/approve',
-      data: { annotation_ids: ids },
+      data: { annotations: annotations },
       dataType: 'json',
       success: function(updated_notes){ // won't need when we upgrade backbone and have Collection#update
         _.each( updated_notes, function( note ){
@@ -81,7 +95,6 @@ dc.model.NoteSet = Backbone.Collection.extend({
         });
       }
     });
-    
   }
 
 });
