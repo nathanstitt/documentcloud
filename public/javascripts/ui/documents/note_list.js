@@ -15,20 +15,19 @@ dc.ui.NoteList = Backbone.View.extend({
     _.bindAll( this, 'render','_addNote');
     this.collection.bind('reset', this.render );
     this.collection.bind('add', this._addNote);
-//    this.collection.bind('remove', this._onRemoveNote);
-
   },
 
   onApproveAll: function(){
-    this.collection.markApproved();
+    _.each( this.filtered_notes, function(note){
+      note.set({ moderation_approval: true });
+    });
+    this.collection.updateApproval( this.filtered_notes );
   },
 
   onValuesChanged: function( ev, data ){
     var selected = this.collection.filter( function(note){
       return ( note.createdAt() >= data.values.min && note.createdAt() <= data.values.max );
     });
-
-
     this.renderNotes( selected );
   },
 
@@ -43,10 +42,6 @@ dc.ui.NoteList = Backbone.View.extend({
     this.updateModerationControls( ordered_notes );
   },
 
-  // _onRemoveNote: function(ev,data){
-  //   this.updateModerationControls( this.collection.sortBy(this._createdComparator) );
-  // },
-
   // Render each of a document's notes, which have already been fetched.
   _addNote : function(note) {
     var noteView = new dc.ui.Note({
@@ -54,8 +49,6 @@ dc.ui.NoteList = Backbone.View.extend({
       collection : this.collection
     });
 
-    // if isModerator = note is shared with you or you are a member of the organization
-    // 
 
     this.$('.filtered_notes').append(noteView.render().el);
 
@@ -83,6 +76,7 @@ dc.ui.NoteList = Backbone.View.extend({
 
   renderNotes: function( notes ){
     this.$('.filtered_notes').empty();
+    this.filtered_notes = notes;
     this.$('.showing-count').text( notes.length );
     _.each( notes, this._addNote );
   },
