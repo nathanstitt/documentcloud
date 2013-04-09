@@ -313,9 +313,33 @@
     }
 
   .document .notes .moderate_tools {
-    float: left;
     width: 20px;
+    float: left;
   }
+  .document .notes .moderate_tools .icon {
+     height: 25px;
+     cursor: pointer;
+   }
+    .document .notes .moderate_tools .remove {
+        background-image: url(/images/embed/icons/delete.png);
+     }
+    .document .notes .moderate_tools .status {
+      border: 1px solid grey;
+      border-radius: 3px;
+      height: 17px;
+      margin-right: 4px;
+      width: 17px;
+      cursor: pointer;
+    }
+    .document .notes .moderate_tools .status.unexamined {
+      background-color: lightGrey;
+    }
+    .document .notes .moderate_tools .status.approved {
+      background: transparent url(/images/embed/icons/dark_check.png) no-repeat center 2px;
+    }
+    .document .notes .moderate_tools .status.disapproved {
+      background-color: transparent;
+    }
 
   .document.has_notes .notes {
     display: block;
@@ -327,7 +351,6 @@
     font: 12px/18px Helvetica, Arial;
     color: #333;
   }
-
     .note .edit, .note .display {
       display: none;
     }
@@ -338,19 +361,7 @@
     .note .access_select {
       float: right;
     }
-    .note .moderation_approved {
-        background-color: lightgray;
-        color: red;
-        font-family: caption;
-        font-size: 20px;
-        left: 30px;
-        padding: 3px;
-        position: absolute;
-        top: 50px;
-        transform: rotate(-15deg);
-        z-index: 10;
-        box-shadow: 3px 3px 5px #888888;
-    }
+
     .note .annotation_author {
       float: right;
       font-size: 11px;
@@ -382,6 +393,10 @@
       overflow: hidden;
       padding: 10px;
     }
+      .note .note_contents.approved {
+        border: 3px solid #00ff00;
+
+      }
       .note .note_title {
         color: #000;
         font-weight: bold;

@@ -15,7 +15,7 @@ dc.ui.NoteList = Backbone.View.extend({
     _.bindAll( this, 'render','_addNote');
     this.collection.bind('reset', this.render );
     this.collection.bind('add', this._addNote);
-    this.collection.bind('remove', this._onRemoveNote);
+//    this.collection.bind('remove', this._onRemoveNote);
 
   },
 
@@ -27,6 +27,7 @@ dc.ui.NoteList = Backbone.View.extend({
     var selected = this.collection.filter( function(note){
       return ( note.createdAt() >= data.values.min && note.createdAt() <= data.values.max );
     });
+
 
     this.renderNotes( selected );
   },
@@ -42,9 +43,9 @@ dc.ui.NoteList = Backbone.View.extend({
     this.updateModerationControls( ordered_notes );
   },
 
-  _onRemoveNote: function(ev,data){
-    this.updateModerationControls( this.collection.sortBy(this._createdComparator) );
-  },
+  // _onRemoveNote: function(ev,data){
+  //   this.updateModerationControls( this.collection.sortBy(this._createdComparator) );
+  // },
 
   // Render each of a document's notes, which have already been fetched.
   _addNote : function(note) {
@@ -67,7 +68,6 @@ dc.ui.NoteList = Backbone.View.extend({
 
   render: function(){
     this.$el.html( JST["document/notes_listing"]() );
-
 
     var ordered = this.collection.sortBy(this._createdComparator);
 

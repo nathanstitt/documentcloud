@@ -5,14 +5,14 @@ dc.ui.Note = Backbone.View.extend({
   className : 'note noselect',
 
   events : {
-    'click .title_link':       'viewNoteInDocument',
-    'click .edit_note':        'editNote',
-    'click .cancel_note':      'cancelNote',
-    'click .save_note':        'saveNote',
-    'click .save_draft_note':  'saveNote',
-    'click .delete_note':      'deleteNote',
-    'click .remove.moderate':  'performDeletion',
-    'click .approve.moderate': 'approveNote'
+    'click .title_link'             : 'viewNoteInDocument',
+    'click .edit_note'              : 'editNote',
+    'click .cancel_note'            : 'cancelNote',
+    'click .save_note'              : 'saveNote',
+    'click .save_draft_note'        : 'saveNote',
+    'click .delete_note'            : 'deleteNote',
+    'click .remove.moderate'        : 'performDeletion',
+    'click .moderate_tools .status' : 'toggleModeration'
   },
 
   // Re-render the note when saved.
@@ -106,8 +106,8 @@ dc.ui.Note = Backbone.View.extend({
       return true;
   },
 
-  approveNote: function(){
-    this.model.markApproved();
+  toggleModeration: function(){
+    this.model.toggleModeration();
   },
 
   // prompt for assurance, then delete
