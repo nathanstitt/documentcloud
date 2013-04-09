@@ -141,7 +141,8 @@ class Annotation < ActiveRecord::Base
   def canonical(opts={})
     data = {
       'id' => id, 'page' => page_number, 'title' => title, 'content' => content, 
-      :moderation_date=>moderation_date, :access => access_name, 'created_at'=>created_at
+      :moderation_approval=>moderation_approval, :access => access_name, 'created_at'=>created_at
+
     }
     data['location'] = {'image' => location} if location
     data['image_url'] = document.page_image_url_template if opts[:include_image_url]
@@ -168,9 +169,6 @@ class Annotation < ActiveRecord::Base
     }).to_json
   end
 
-  def mark_approved
-    update_attributes({ :moderation_date => Time.now })
-  end
 
   private
 
