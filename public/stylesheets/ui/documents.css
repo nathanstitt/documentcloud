@@ -325,19 +325,20 @@
      }
     .document .notes .moderate_tools .status {
       border: 1px solid grey;
-      border-radius: 8px;
+      -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px;
       height: 15px;
       width: 15px;
       cursor: pointer;
+      background: transparent url(/images/embed/icons/dark_check.png) no-repeat center center;
     }
     .document .notes .moderate_tools .status.unexamined {
       background-color: lightGrey;
     }
     .document .notes .moderate_tools .status.approved {
-      background: transparent url(/images/embed/icons/dark_check.png) no-repeat center center;
+      background-color: white;
     }
     .document .notes .moderate_tools .status.disapproved {
-      background-color: transparent;
+      background: none;
     }
 
   .document.has_notes .notes {
