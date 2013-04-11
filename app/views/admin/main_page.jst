@@ -2,7 +2,11 @@
   <thead></thead>
 
   <tbody class="statistics">
-
+    <tr class="actions">
+      <td colspan="4" class="refresh">
+        Last refresh: <span class="timeago"></span> <div class="minibutton">Refresh Now</div>
+      </td>
+    </tr>
     <!-- Big Numbers -->
 
     <tr class="data">
@@ -43,10 +47,11 @@
       <td>Organizations Embedding Documents</td>
       <td>Collaborators on Documents</td>
     </tr>
-    
-  </tbody>
 
-  <tbody class="charts">
+  </tbody>
+</table>
+<table class="charts">
+  <tbody>
 
       <!-- Document and Page Charts -->
 
@@ -66,7 +71,7 @@
         <td colspan="2">This Month: <b>Daily</b> Documents &amp; Pages</td>
         <td colspan="2">All Time: <b>Weekly</b> Documents &amp; Pages</td>
       </tr>
-      
+
       <!-- Hit Charts -->
 
       <tr class="data">
@@ -87,9 +92,45 @@
       </tr>
       <!-- end of charts -->
   </tbody>
-
-  <tbody>
+</table>
       <!-- Recent 5 docs -->
+<table id="latest_documents">
+  <tbody>
+    <tr class="actions">
+      <td colspan="4" class="refresh">
+        Last refresh: <span class="timeago"></span> <div class="minibutton">Refresh Now</div>
+      </td>
+    </tr>
+    <tr class="data">
+      <td colspan="4">
+        <table class="documents">
+          <thead>
+            <tr>
+              <td>Cover</td>
+              <td>ID</td>
+              <td>Title</td>
+              <td>Contributor</td>
+              <td>Organization</td>
+              <td>Pages</td>
+              <td></td>
+            </tr>
+          </thead>
+          <tbody class="view">
+          </tbody>
+        </table>
+      </td>
+    </tr>
+    <tr class="labels">
+      <td colspan="4">Most Recent 5 Uploaded Documents</td>
+    </tr>
+</table>
+    <!-- Popular Docs -->
+<table id="top_documents">
+    <tr class="actions">
+      <td colspan="4" class="refresh">
+        Last refresh: <span class="timeago"></span> <div class="minibutton">Refresh Now</div>
+      </td>
+    </tr>
 
     <tr class="data">
       <td colspan="4">
@@ -100,22 +141,38 @@
             <td>Title</td>
             <td>Contributor</td>
             <td>Organization</td>
-            <td>Pages</td>
+            <td>Hits</td>
+            <td>Embed Date</td>
             <td></td>
           </thead>
-          <tbody id="latest_documents_tmpl">
+          <tbody class="view">
           </tbody>
         </table>
       </td>
     </tr>
-    <tr class="labels">
-      <td colspan="4">Most Recent 5 Uploaded Documents</td>
-    </tr>
-    
-    <!-- Popular Docs -->
-    <tr class="data top_documents_list">
+    <tr class="labels top_documents_label_week">
       <td colspan="4">
-        <table class="documents">
+        <div class="float_right more_top_documents text_link">Top 100 Published Documents</div>
+        <a class="float_right download_csv text_link" href="/admin/top_documents_csv.csv">Download CSV</a></div>
+        Top 5 Most Popular Published Documents - Past 7 days
+      </td>
+    </tr>
+    <tr class="labels top_documents_label_year">
+      <td colspan="4">
+        Most Popular Published Documents - Past year
+      </td>
+    </tr>
+</table>
+    <!-- Popular Notes -->
+<table id="top_notes">
+    <tr class="actions">
+      <td colspan="4" class="refresh">
+        Last refresh: <span class="timeago"></span> <div class="minibutton">Refresh Now</div>
+      </td>
+    </tr>
+    <tr class="data top_notes_list">
+      <td colspan="4">
+        <table class="notes documents">
           <thead>
             <td>Cover</td>
             <td>ID</td>
@@ -126,54 +183,24 @@
             <td>Embed Date</td>
             <td></td>
           </thead>
-          <tbody id="top_documents_tmpl">
+          <tbody class="view">
           </tbody>
         </table>
       </td>
     </tr>
-
-    <tr class="labels top_documents_label_week">
-      <td colspan="4">
-        <div class="float_right more_top_documents text_link">All Published Documents</div>
-        <a class="float_right download_csv text_link" href="/admin/top_documents_csv.csv">Download CSV</a></div>
-        Top 5 Most Popular Published Documents - Past 7 days
-      </td>
-    </tr>
-    <tr class="labels top_documents_label_year">
-      <td colspan="4">
-        Most Popular Published Documents - Past year
-      </td>
-    </tr>
-    
-    <!-- Popular Notes -->
-
-<tr class="data top_notes_list">
-  <td colspan="4">
-    <table class="notes documents">
-      <thead>
-        <td>Cover</td>
-        <td>ID</td>
-        <td>Title</td>
-        <td>Contributor</td>
-        <td>Organization</td>
-        <td>Hits</td>
-        <td>Embed Date</td>
-        <td></td>
-      </thead>
-      <tbody id="top_notes_tmpl">
-      </tbody>
-    </table>
-  </td>
-</tr>
-
-
     <tr class="labels top_notes_label_week">
       <td colspan="4">
         Top 5 Most Popular Published Notes - Past 7 days
       </td>
     </tr>
-    
-    <!-- Popular Notes -->
+</table>
+    <!-- Popular Note Searches -->
+<table id="top_searches">
+    <tr class="actions">
+      <td colspan="4" class="refresh">
+        Last refresh: <span class="timeago"></span> <div class="minibutton">Refresh Now</div>
+      </td>
+    </tr>
     <tr class="data top_searches_list">
       <td colspan="4">
         <table class="searches">
@@ -183,7 +210,7 @@
             <td>Embed Date</td>
             <td></td>
           </thead>
-          <tbody id="top_searches_tmpl">
+          <tbody class="view">
           </tbody>
         </table>
       </td>
@@ -193,9 +220,14 @@
         Top 5 Most Popular Search Embeds - Past 7 days
       </td>
     </tr>
-    
+</table>
     <!-- Breakdown by the numbers -->
-    
+<table id="by_the_numbers">
+    <tr class="actions">
+      <td colspan="4" class="refresh">
+        Last refresh: <span class="timeago"></span> <div class="minibutton">Refresh Now</div>
+      </td>
+    </tr>
     <tr class="data">
       <td colspan="4">
         <table id="numbers">
@@ -208,8 +240,7 @@
             <td>Total</td>
             <td></td>
           </thead>
-          <tbody id="by_the_numbers_tmpl">
-
+          <tbody class="view">
           </tbody>
         </table>
       </td>
@@ -217,9 +248,14 @@
     <tr class="labels">
       <td colspan="5">Breakdown by the Numbers</td>
     </tr>
-    
+</table>
     <!-- EC2 Instances -->
-
+<table id="ec2">
+    <tr class="actions">
+      <td colspan="4" class="refresh">
+        Last refresh: <span class="timeago"></span> <div class="minibutton">Refresh Now</div>
+      </td>
+    </tr>
     <tr class="data">
       <td colspan="4">
         <table id="instances">
@@ -232,7 +268,7 @@
             <td>DNS (Internal)</td>
             <td></td>
           </thead>
-          <tbody id="ec2_tmpl">
+          <tbody class="view">
           </tbody>
         </table>
       </td>
@@ -240,9 +276,14 @@
     <tr class="labels">
       <td colspan="4">Active EC2 Instances</td>
     </tr>
-    
+</table>
     <!-- Failed Uploads -->
-
+<table id="failed_documents">
+    <tr class="actions">
+      <td colspan="4" class="refresh">
+        Last refresh: <span class="timeago"></span> <div class="minibutton">Refresh Now</div>
+      </td>
+    </tr>
     <tr class="data">
       <td colspan="4">
         <table class="documents">
@@ -256,7 +297,7 @@
             <td>Date</td>
             <td></td>
           </thead>
-          <tbody id="failed_documents_tmpl">
+          <tbody class="view">
           </tbody>
         </table>
       </td>
@@ -264,9 +305,9 @@
     <tr class="labels">
       <td colspan="4">Most Recent 3 Failed Uploads</td>
     </tr>
-    
+</table>
     <!-- Accounts -->
-
+<table>
     <tr class="data accounts_row" style="display:none;">
       <td colspan="4">
         <div id="accounts_wrapper">
@@ -279,7 +320,6 @@
         All Accounts and Organizations
       </td>
     </tr>
-
   </tbody>
 </table>
 
