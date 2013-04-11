@@ -1,7 +1,6 @@
 body {
   background: #fff;
 }
-
 #admin_actions {
   position: absolute;
   top: 8px; right: 35px;
@@ -19,6 +18,16 @@ body {
   #statistics table {
     width: 100%;
   }
+    #statistics .actions .refresh {
+      text-align: right;
+      vertical-align: middle;
+    }
+
+    #statistics .actions .refresh .minibutton {
+      display: inline-block;
+      width: 80px;
+    }
+
     #statistics td {
       color: #222;
       padding: 0 35px 0 0;
@@ -29,6 +38,11 @@ body {
           font-size: 50px;
           border-bottom: 1px solid #131b1d;
         }
+          #statistics td.loading {
+            font-weight: bold;
+            font-size: 20px;
+            padding: 10px;
+          }
           #statistics .number.loading{
             color: #b3b3b3;
             font-size: 20px;
