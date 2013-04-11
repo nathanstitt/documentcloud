@@ -193,10 +193,7 @@ dc.ui.Admin = Backbone.View.extend({
 
   // Displays all top documents, retrieved through AJAX.
   _displayMoreTopDocuments : function(data) {
-    TopDocuments.reset(data);
-    this.$('.top_documents_list').replaceWith(JST['top_documents']({}));
-    this.$('.top_documents_label_year').css({'display': 'table-row'});
-    this.$('.top_documents_label_week').css({'display': 'none'});
+    this.updaters.top_documents.collection.reset(data);
   },
 
 
