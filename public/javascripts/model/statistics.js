@@ -26,7 +26,11 @@ dc.model.StatisticsSet = Backbone.Collection.extend({
 
   addCalculatedRecords: function(){
 
-    var acl =  this.get('documents_by_access').get('value'),
+    var dba = this.get('documents_by_access');
+    if (! dba ){
+      return;
+    }
+    var acl = dba.get('value'),
           a = dc.access;
 
     this.add( { 
