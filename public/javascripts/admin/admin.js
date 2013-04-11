@@ -77,7 +77,7 @@ dc.ui.Admin = Backbone.View.extend({
     $('#topbar').append(this._actionsMenu.render().el);
 
     _.each( this.updaters, function( updater, name ){
-      updater.setElement( this.$('#' + name + '_tmpl' ) );
+      updater.setElement( this.$('#' + name ) );
     },this);
 
     this.statistics.setElement(  this.$('.statistics') ).render();

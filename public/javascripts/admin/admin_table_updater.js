@@ -11,6 +11,9 @@ dc.ui.AdminTableLine = Backbone.View.extend({
 
 
 dc.ui.AdminTableUpdater = Backbone.View.extend({
+  events:{
+    'click .refresh': '_reload'
+  },
 
   initialize: function(){
     _.bindAll(this, 'appendLine', 'render','_reload' );
@@ -26,19 +29,28 @@ dc.ui.AdminTableUpdater = Backbone.View.extend({
   },
 
   _reload: function(){
-    this.collection.fetch(); 
+    this.$('.view').html('<td class="loading">Loading...</td>');
+    this.collection.fetch();
   },
 
   appendLine: function( model ){
     var line = new dc.ui.AdminTableLine({model: model, tmpl: this.options.tmpl });
-    this.$el.append( line.render().el );
+    return line.render().el;
+  },
+
+  setUpdatedTime: function(){
+    var el = this.$('.timeago');
+    if ( el.data('timeago') )
+      el.timeago('update', (new Date).toISOString() );
+    else
+      el.attr('title', (new Date).toISOString() ).timeago();
   },
 
   render: function(){
+    this.setUpdatedTime();
     if ( _.isFunction( this.options.beforeRender ) )
       this.options.beforeRender( this.collection );
-    this.$el.html('');
-    this.collection.each( this.appendLine );
+    this.$('.view').html( this.collection.map( this.appendLine ) );
   }
 
 });
