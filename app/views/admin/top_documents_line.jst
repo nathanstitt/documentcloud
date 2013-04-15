@@ -1,5 +1,3 @@
-
-          <tr>
             <td class="first"><img class="doc" src="<%= line.get('thumbnail_url') %>" /></td>
             <td><%= line.get('document_id') %></td>
             <td><a href="<%= line.get('remote_url') || line.get('detected_remote_url') %>"><%= line.get('public') ? dc.inflector.truncate(line.get('title') || '', 50) : '<i>private</i>' %></a></td>
@@ -8,5 +6,3 @@
             <td><%= line.get('hits') %></td>
             <td><%= line.get('first_recorded_date') %></td>
             <td class="last"></td>
-          </tr>
-
