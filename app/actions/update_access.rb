@@ -15,8 +15,8 @@ class UpdateAccess < CloudCrowd::Action
       EntityDate.update_all(*sql)
       begin
         DC::Store::AssetStore.new.set_access(document, access)
-      rescue RightAws::AwsError => e
-        raise e unless e.http_code == "404"
+      rescue AWS::Errors::Base => e
+        raise e unless e.code == "404"
       end
       document.update_attributes(:access => access)
     rescue Exception => e
