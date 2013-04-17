@@ -1,3 +1,5 @@
+require 'aws/ec2'
+
 module DC
 
   # Utility AWS class for some simple Amazon management.
@@ -17,16 +19,23 @@ module DC
       :scripts  => [SCRIPTS[:update]]
     }
 
-    # Create our EC2 connection upon initialization.
-    def initialize
-      @ec2 = RightAws::Ec2.new(SECRETS['aws_access_key'], SECRETS['aws_secret_key'])
+    def ec2
+      @ec2 ||= ::AWS::EC2.new
     end
 
     # Describe the running instances.
     def describe_instances
       begin
-        @ec2.describe_instances
-      rescue RightAws::AwsError => e
+        ec2.instances.map do | instance |
+          {
+            :aws_instance_id   => instance.id,
+            :aws_instance_type => instance.instance_type,
+            :aws_state         => instance.status,
+            :dns_name          => instance.dns_name,
+            :private_dns_name  => instance.private_dns_name
+          }
+        end
+      rescue AWS::Errors::Base => e
         Rails.logger.error e.message
         []
       end
@@ -34,11 +43,20 @@ module DC
 
     # Describe our current snapshots.
     def describe_snapshots
-      @ec2.describe_snapshots
+      ec2.snapshots.map do | snapshot |
+        {
+          :aws_id          => snapshot.id,
+          :aws_volume_size => snapshot.volume_size,
+          :aws_progress    => snapshot.progress,
+          :aws_status      => snapshot.status,
+          :aws_volume_id   => snapshot.volume_id,
+          :aws_started_at  => snapshot.start_time
+        }
+      end
     end
 
     def create_snapshot(volume_id)
-      @ec2.create_snapshot(volume_id)
+      ec2.volumes[ volume_id ].create_snapshot
     end
 
     # Boot a new instance, given `ami`, `type`, and `scripts` options.
@@ -61,13 +79,18 @@ module DC
 
       File.chmod(0600, ssh_config['IdentityFile'])
 
-      new_instance = @ec2.run_instances(options[:ami], instance_count, instance_count, group, keypair, userdata, addressing_type, options[:type], nil, nil, zone)[0]
+      new_instance = ec2.instances.create({
+                                            :image_id          => options[:ami],
+                                            :count             => instance_count,
+                                            :security_groups   => group,
+                                            :key_name          => key_name,
+                                            :instance_type     => options[:type],
+                                            :availability_zone => zone
+                                          })
 
       # wait until instance is running and get the public dns name
-      while true do
+      while :pending == new_instance.status
         sleep 2
-        new_instance = @ec2.describe_instances(new_instance[:aws_instance_id])[0]
-        break if new_instance[:aws_state] != 'pending'
         Rails.logger.info "waiting for instance #{new_instance[:aws_instance_id]} state to become 'running'"
       end
 
@@ -76,7 +99,7 @@ module DC
       while true do
         sleep 2
         break if system "ssh -o ConnectTimeout=10 #{ssh_options} #{new_instance[:dns_name]} exit 0 2>/dev/null"
-        Rails.logger.info "waiting for instance #{new_instance[:aws_instance_id]} / #{new_instance[:dns_name]} to start sshd "
+        Rails.logger.info "waiting for instance #{new_instance.instance_id} / #{new_instance.dns_name} to start sshd "
       end
 
       # configure new instance with ssh key to access github
@@ -89,12 +112,12 @@ module DC
         end
       end
 
-      Rails.logger.info "ssh #{ssh_options} #{new_instance[:dns_name]}"
+      Rails.logger.info "ssh #{ssh_options} #{new_instance.dns_name}"
     end
 
     # Terminate an instance on EC2
     def terminate_instance(instance_id)
-      @ec2.terminate_instances([instance_id])
+      ec2.instances[ instance_id ].terminate
     end
 
   end
