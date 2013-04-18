@@ -35,7 +35,7 @@ module DC
             :private_dns_name  => instance.private_dns_name
           }
         end
-      rescue AWS::Errors::Base => e
+      rescue ::AWS::Errors::Base => e
         Rails.logger.error e.message
         []
       end
