@@ -5,7 +5,7 @@ dc.ui.Document = Backbone.View.extend({
   PAGE_LIMIT : 50,
 
   // To display if the document failed to upload.
-  ERROR_MESSAGE : '<span class="interface">' + _.t('document_error_message',
+  ERROR_MESSAGE : '<span class="interface">' + _.t('document_error_message', '<b>','</b>',
                                                    '<span class="text_link troubleshoot">', '</span>',
                                                    '<span class="text_link contact_us">',   '</span>' ) +
     '</span>',

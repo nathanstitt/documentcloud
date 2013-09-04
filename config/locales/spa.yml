@@ -477,7 +477,7 @@ workspace:
   - El documento subido tiene
   - Los %d documentos tienen
   # this message is displayed beside documents that have failed to upload properly 
-  document_error_message: Nuestro sistema no pudo procesar este documento. Estamos atentos al problema y regularmente revisamos errores. Por favor revisa nuestras %ssugerencias para resolver fallos técnicos%s o %scontáctanos%s para obtener asistencia inmediata.  
+  document_error_message: Nuestro sistema no pudo procesar este documento. %sADVERTENCIA:%s Si usted hizo redacciones, comprobar tanto la versión en el espectador y el PDF descargable antes de su publicación para asegurar esas redacciones están en su lugar. Por favor revisa nuestras %ssugerencias para resolver fallos técnicos%s o %scontáctanos%s para obtener asistencia inmediata.  
   upload: Subir
   upload_document: Subir Documento
   max_upload_size_warn: Sólo se pueden subir documentos que pesen menos de 200MB. Por favor %soptimiza tus documentos%s antes de continuar.
