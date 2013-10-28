@@ -198,7 +198,10 @@ class AuthenticationController < ApplicationController
 
     if logged_in?
       data[:account] = current_account.canonical
-      if document = Document.accessible(current_account,current_organization).find( document_id ) 
+      if document = Document.accessible(current_account,current_organization).find( document_id )
+        if document.commentable?( current_account )
+          data[:document][:annotations_url] = document.annotations_url
+        end
         data[:document][:annotations] = document.annotations_with_authors( current_account ).map do | note |
           note.canonical.merge({ :editable=> current_account.owns?( note ) })
         end
