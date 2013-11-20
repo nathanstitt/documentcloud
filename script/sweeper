@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'erb'
+require 'yaml'
+require 'pg'
+require 'time'
+
+module Rails
+    def self.root
+        File.expand_path( File.dirname(__FILE__) + "/.." )
+    end
+end
+
+if ARGV.count != 2
+    STDERR.puts "Usage:\n#{$0} <Rails environment> <seconds>"
+    exit 1
+end
+(env,seconds) = ARGV
+
+config = YAML.load(ERB.new(File.read(Rails.root+"/config/database.yml") ).result )[env]
+
+conn = PG.connect({
+        :dbname   => config['database'],
+        :user     => config['username'],
+        :password => config['password'],
+        :host     => config['host']
+    })
+
+res = conn.exec("select id,slug,updated_at from documents where updated_at > now() - '#{seconds} seconds'::interval")
+res.each_row do | id,slug,updated_at |
+    path = Rails.root + "/public/documents/#{id}-#{slug}.js"
+    if File.exists?( path )
+        ctime = File.ctime( path )
+        updated_at = Time.parse(updated_at)
+#        puts "%40s %10.2f %10.2f %10.2f" % [ path, ctime.to_f, updated_at.to_f, ctime.to_f-updated_at.to_f ]
+        if ctime < updated_at
+            File.unlink( path )
+#            puts "EXIRE!"
+        end
+
+    end
+end
