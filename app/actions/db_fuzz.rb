@@ -9,8 +9,7 @@ class DbFuzz < CloudCrowd::Action
 
     doc_id = rand(Document.maximum(:id) )
     if ( document = Document.where({ id: doc_id  }).first )
-      document.pages.pluck(:page_number).last
-      Rails.logger.info "Page #{page_number}"
+      document.pages.pluck(:page_number)
     end
     Rails.logger.info "Document #{doc_id} found: #{!document.nil?}"
     sleep 2
