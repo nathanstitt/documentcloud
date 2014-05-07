@@ -61,9 +61,10 @@ class AccountsController < ApplicationController
   def signup
     redirect_to '/home' and return if logged_in?
     @account = Account.new( params.fetch(:account, {}).permit(:first_name,:last_name,:email,:language,:document_language) )
-    if request.post? && params[:]@account.save
+    if request.post? && params[:acceptance].present? && @account.save
       @account.authenticate(session,cookies)
       @account.send_login_instructions
+      @current_account = @account
       render :action=>:signup_success
     end
   end

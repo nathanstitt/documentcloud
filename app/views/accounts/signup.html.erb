@@ -1,62 +1,61 @@
 <% @stylesheets=[:login] %>
 <div id="account_signup">
 
-<h3>Signup for a DocumentCloud personal account</h3>
+  <h3>Signup for a DocumentCloud personal account</h3>
 
   <%= form_for @account, :url=>'signup' do |f| %>
 
-    <% if @account.errors.any? %>
-      <div class="form_error login_error">
-        <span><%= @account.errors.full_messages.join('; ') %></span>
-      </div>
-    <% end %>
+  <% if @account.errors.any? %>
+  <div class="form_error login_error">
+    <span><%= @account.errors.full_messages.join('; ') %></span>
+  </div>
+  <% end %>
 
-    <%= f.label :first_name %>
-    <div class="text_input first light">
-      <div class="inner">
-        <%= f.text_field :first_name %>
+  <%= f.label :first_name %>
+  <div class="text_input first light">
+    <div class="inner">
+      <%= f.text_field :first_name %>
+    </div>
+  </div>
+
+  <%= f.label :last_name %>
+  <div class="text_input last light">
+    <div class="inner">
+      <%= f.text_field :last_name %>
+    </div>
+  </div>
+
+  <%= f.label :email %>
+  <div class="text_input last light">
+    <div class="inner">
+      <%= f.text_field :email %>
+    </div>
+  </div>
+
+  <div class="languages">
+
+    <div class="ui">
+      <%= f.label :language, label: "User" %>
+      <div class="">
+        <%= f.collection_select( :language, DC::Language::USER_NAMES, :first, :last) %>
+      </div>
+    </div>
+    <div class="document">
+      <%= f.label :document_language %>
+      <div class="">
+        <%= f.collection_select( :document_language, DC::Language::NAMES, :first, :last) %>
       </div>
     </div>
 
-    <%= f.label :last_name %>
-    <div class="text_input last light">
-      <div class="inner">
-        <%= f.text_field :last_name %>
-      </div>
-    </div>
+  </div>
+  <div class="clear"></div>
 
-    <%= f.label :email %>
-    <div class="text_input last light">
-      <div class="inner">
-        <%= f.text_field :email %>
-      </div>
-    </div>
-
-    <div class="languages">
-
-      <div class="ui">
-        <%= f.label :language, label: "User" %>
-        <div class="">
-          <%= f.collection_select( :language, DC::Language::USER_NAMES, :first, :last) %>
-        </div>
-      </div>
-      <div class="document">
-        <%= f.label :document_language %>
-        <div class="">
-          <%= f.collection_select( :document_language, DC::Language::NAMES, :first, :last) %>
-        </div>
-      </div>
-
-    </div>
-    <div class="clear"></div>
-
-    <div class="tc-acceptance">
-      <label for="acceptance">I agree to abide by the DocumentCloud Terms and Conditions
+  <div class="tc-acceptance">
+    <label for="acceptance">I agree to abide by the DocumentCloud <a href="/terms">Terms of Service</a>
       <input id="acceptance" type="checkbox" name="acceptance" checked=true>
-      </label>
-    </div>
+    </label>
+  </div>
 
-    <input type="submit" class="minibutton" value="Create">
+  <input type="submit" class="minibutton" value="Sign Up">
   <% end %>
 </div>
-

@@ -3,6 +3,11 @@
   margin: 20px auto;
 }
 
+
+#account_signup.success {
+  text-align: center;
+}
+
 #account_signup h3{
   font-size: 1.2em;
   text-align: center;
@@ -18,9 +23,6 @@
   height: 22px;
   margin-top: 0;
   padding: 0 20px;
-  position: relative;
-  top: 10px;
-  left: 30%;
 }
 
 #account_signup label {
@@ -46,4 +48,8 @@
 
 #account_signup .languages .document {
   float: right;
+}
+
+#account_signup .tc-acceptance {
+  text-decoration: underline;
 }
