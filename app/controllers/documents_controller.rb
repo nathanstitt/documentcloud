@@ -20,7 +20,7 @@ class DocumentsController < ApplicationController
     respond_to do |format|
       format.html do
         @no_sidebar = (params[:sidebar] || '').match /no|false/
-        populate_editor_data if current_account && current_organization
+        populate_editor_data if current_account
         return if date_requested?
         return if entity_requested?
       end
