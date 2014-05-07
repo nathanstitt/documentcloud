@@ -62,8 +62,9 @@ stylesheets:
     - public/stylesheets/pages/admin_featured_reports.css
   home:
     - public/stylesheets/pages/home.css
-  embedded_login:
+  login:
     - public/stylesheets/pages/embedded_login.css
+    - public/stylesheets/pages/signup.css
   viewer_editing:
     - public/stylesheets/pages/viewer_editing.css
   ie_only:

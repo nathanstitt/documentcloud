@@ -125,6 +125,7 @@ DC::Application.routes.draw do
   resources :accounts do
     collection {
       get :logged_in
+      match :signup, via: [:get,:post]
     }
     member {
       post :resend_welcome

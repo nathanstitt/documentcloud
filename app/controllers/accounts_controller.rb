@@ -4,7 +4,7 @@ class AccountsController < ApplicationController
   layout 'workspace'
 
   before_action :secure_only, :only => [:enable, :reset]
-  before_action :login_required, :except => [:enable, :reset, :logged_in]
+  before_action :login_required, :except => [:signup, :enable, :reset, :logged_in]
   before_action :bouncer, :only => [:enable, :reset] if Rails.env.staging?
 
   # Enabling an account continues the second half of the signup process,
@@ -54,6 +54,17 @@ class AccountsController < ApplicationController
       format.json do 
         json current_organization.accounts.active
       end
+    end
+  end
+
+  # Signup for an account
+  def signup
+    redirect_to '/home' and return if logged_in?
+    @account = Account.new( params.fetch(:account, {}).permit(:first_name,:last_name,:email,:language,:document_language) )
+    if request.post? && params[:]@account.save
+      @account.authenticate(session,cookies)
+      @account.send_login_instructions
+      render :action=>:signup_success
     end
   end
 
@@ -142,5 +153,8 @@ class AccountsController < ApplicationController
     current_organization.memberships.where( account_id: params[:id] ).update_all( role: Account::DISABLED )
     json nil
   end
+
+  private
+
 
 end

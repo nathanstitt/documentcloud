@@ -1,0 +1,49 @@
+#account_signup {
+  width: 300px;
+  margin: 20px auto;
+}
+
+#account_signup h3{
+  font-size: 1.2em;
+  text-align: center;
+  font-weight: strong;
+  margin: 10px 0;
+}
+#account_signup label {
+  display: block;
+}
+
+#account_signup .minibutton {
+  font-size: 16px;
+  height: 22px;
+  margin-top: 0;
+  padding: 0 20px;
+  position: relative;
+  top: 10px;
+  left: 30%;
+}
+
+#account_signup label {
+  margin: 10px 0;
+}
+
+#account_signup .tc-acceptance {
+  margin-top: 10px;
+  text-align: center;
+}
+
+#account_signup .tc-acceptance label {
+  text-align: center;
+}
+
+#account_signup .languages > div{
+  text-align: center;
+  width: 145px;
+}
+#account_signup .languages .ui{
+  float: left;
+}
+
+#account_signup .languages .document {
+  float: right;
+}

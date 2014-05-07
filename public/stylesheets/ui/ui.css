@@ -636,14 +636,14 @@ iframe.hidden_iframe {
 .form_error, .form_success {
   position: relative;
   text-align: center;
+  border: 1px solid #aa7766;
+  background: #fcc;
 }
   .form_error > span, .form_success > span {
     color: #844;
     text-transform: uppercase;
     font: 10px Helvetica, Arial;
     padding: 4px 8px 5px;
-    border: 1px solid #aa7766;
-    background: #fcc;
     margin: 0 auto;
     display: inline;
     -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;

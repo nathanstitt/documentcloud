@@ -21,6 +21,7 @@ module DC
     DEFAULT = 'eng'
     
     USER = ['spa','eng','rus','ukr']
+    USER_NAMES=NAMES.select{ |code,name| USER.include?(code) }
   end
 
 end

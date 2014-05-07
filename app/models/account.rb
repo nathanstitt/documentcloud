@@ -21,9 +21,8 @@ class Account < ActiveRecord::Base
   validates  :first_name, :last_name, :presence=>true
   validates  :email,
     :presence   =>true,
-    :uniqueness =>{ :case_sensitive => false },
     :format     =>{ :with => DC::Validators::EMAIL },
-    :if         => :has_memberships?
+    :uniqueness => { :case_sensitive => false }
 
   validate :validate_identity_is_unique
   validates :language, :inclusion=>{ :in => DC::Language::USER,
