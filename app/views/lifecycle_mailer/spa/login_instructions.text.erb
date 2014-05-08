@@ -3,7 +3,7 @@
 <% if @admin -%>
   <%= @admin.full_name %> lo ha agregado a la cuenta de <%= @account.organization_name %>'s en DocumentCloud.
 <% else -%>
-Una cuenta de DocumentCloud ha sido creada para usted y <%= @account.organization.name %>.
+Una cuenta de DocumentCloud ha sido creada para usted<% if @account.organization %> y <%= @account.organization.name %><% end %>.
 <% end -%>
 
 Elija su contraseña y comience a utilizar nuestra beta en:
