@@ -1,5 +1,16 @@
 namespace :crowd do
 
+  task :stats => :environment do
+    start_time = Time.now-10.days
+    begin
+      stat = CloudCrowdStat.new( :period=>((start_time - 5.minutes )..start_time) )
+      stat.pending_count = start_time.hour * rand(10)+2
+      stat.average_wait  = stat.pending_count.to_f * 0.5
+      stat.processing_count = stat.pending_count.to_f * 0.75
+      stat.save!
+    end while (start_time += 5.minutes) < Time.now
+  end
+
   task :console do
     sh "crowd -c config/cloud_crowd/#{RAILS_ENV} -e #{RAILS_ENV} console"
   end

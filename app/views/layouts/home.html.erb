@@ -4,15 +4,18 @@
 <head>
   <%= render :partial => 'common/meta_tags' %>
   <title><%= @title ? "#{@title} - " : '' %>DocumentCloud</title>
-  <%= include_stylesheets :ui, :home %>
+
   <!--[if lt IE 9]>
     <%= include_stylesheets :ie_only, :embed_assets => false %>
   <![endif]-->
-  <%= include_javascripts :core, :home %>
+  <% css = [:ui,  :home] + (@stylesheets || []) + [{:media => 'all'}] %>
+  <% js  = [:core,:home] + (@javascripts || []) %>
+  <%= include_stylesheets *css %>
+  <%= include_javascripts *js %>
   <% if Rails.env.production? %>
     <%= render :partial => 'common/google' %>
   <% end %>
-  <%= csrf_meta_tag %> 
+  <%= csrf_meta_tag %>
 </head>
 <body class="<%= @bodyclass %>">
 
@@ -41,7 +44,7 @@
 
   <div id="container">
     <%= render :partial => 'home/sidebar' %>
-    <%= yield %>
+      <%= yield %>
     <br class="clear" />
   </div>
 

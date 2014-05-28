@@ -13,7 +13,10 @@ javascripts:
     - public/javascripts/vendor/jquery.ui.mouse.js
     - public/javascripts/vendor/jquery.ui.sortable.js
     - public/javascripts/vendor/jquery.ui.autocomplete.js
-    - public/javascripts/vendor/*.js
+    - public/javascripts/vendor/backbone-*.js
+    - public/javascripts/vendor/json2.js
+    - public/javascripts/vendor/visualsearch-*.js
+    - public/javascripts/vendor/sprintf.js
     - public/javascripts/lib/*.js
     - public/javascripts/translations/*.js
     - public/javascripts/model/*.js
@@ -44,6 +47,9 @@ javascripts:
     - public/javascripts/vendor/jquery-*.js
     - public/javascripts/embed/easy_xdm.js
     - public/javascripts/embed/embedded_login.js
+  server_status:
+    - public/javascripts/vendor/d3.js
+    - public/javascripts/server_stats/*.js
 
 stylesheets:
   ui:

@@ -27,8 +27,8 @@ CREATE TABLE accounts (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     identities hstore,
-    language character varying(3),
-    document_language character varying(3)
+    language character varying(3) DEFAULT 'eng'::character varying,
+    document_language character varying(3) DEFAULT 'eng'::character varying
 );
 
 
@@ -118,6 +118,38 @@ CREATE SEQUENCE app_constants_id_seq
 --
 
 ALTER SEQUENCE app_constants_id_seq OWNED BY app_constants.id;
+
+
+--
+-- Name: cloud_crowd_stats; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE cloud_crowd_stats (
+    id integer NOT NULL,
+    period tsrange,
+    pending_count integer,
+    average_wait integer,
+    processing_count integer
+);
+
+
+--
+-- Name: cloud_crowd_stats_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE cloud_crowd_stats_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: cloud_crowd_stats_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE cloud_crowd_stats_id_seq OWNED BY cloud_crowd_stats.id;
 
 
 --
@@ -742,6 +774,13 @@ ALTER TABLE ONLY app_constants ALTER COLUMN id SET DEFAULT nextval('app_constant
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY cloud_crowd_stats ALTER COLUMN id SET DEFAULT nextval('cloud_crowd_stats_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY collaborations ALTER COLUMN id SET DEFAULT nextval('collaborations_id_seq'::regclass);
 
 
@@ -879,6 +918,14 @@ ALTER TABLE ONLY annotations
 
 ALTER TABLE ONLY app_constants
     ADD CONSTRAINT app_constants_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cloud_crowd_stats_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY cloud_crowd_stats
+    ADD CONSTRAINT cloud_crowd_stats_pkey PRIMARY KEY (id);
 
 
 --
@@ -1332,3 +1379,6 @@ INSERT INTO schema_migrations (version) VALUES ('20130109194211');
 INSERT INTO schema_migrations (version) VALUES ('20130327170939');
 
 INSERT INTO schema_migrations (version) VALUES ('20130716200416');
+
+INSERT INTO schema_migrations (version) VALUES ('20140520204436');
+
