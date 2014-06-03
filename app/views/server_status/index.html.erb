@@ -1,2 +1,11 @@
 <div id="server-stats">
+  <div id="charts">
+  </div>
 </div>
+<script>
+  window.server_stats = new ServerStats({
+    el: $('#server-stats'),
+    graphs: ['Pending Count','Processing Count','Avg Wait'],
+    statistics: <%=raw CloudCrowdStat.recent.pluck('pending_count','processing_count','average_wait').to_json %>
+  }).render();
+</script>

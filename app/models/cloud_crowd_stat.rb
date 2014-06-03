@@ -1,14 +1,16 @@
 class CloudCrowdStat < ActiveRecord::Base
 
 
-  def self.record( interval )
+  scope :recent, -> { where('lower(period) < ?',Time.now-1.day) }
+
+  def self.record(interval)
     CloudCrowd::Job.class_eval do
       config_path = "./config/cloud_crowd/#{Rails.env}/database.yml"
       configuration = YAML.load(ERB.new(File.read(config_path)).result)
       self.establish_connection(configuration)
     end
 
-    stat = CloudCrowdStat.new({ :period=>interval })
+    stat = CloudCrowdStat.new({:period=>interval})
 
     stat.pending_count = CloudCrowd::Job.incomplete.count
     stat.average_wait  = CloudCrowd::Job.complete
@@ -19,7 +21,6 @@ class CloudCrowdStat < ActiveRecord::Base
 
     stat.save!
   end
-
 
 
 end
