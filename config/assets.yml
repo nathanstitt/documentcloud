@@ -5,15 +5,17 @@ embed_assets: datauri
 javascripts:
   core:
     - public/javascripts/application.js
-    - public/javascripts/vendor/underscore-*.js
     - public/javascripts/vendor/jquery-*.js
+    - public/javascripts/vendor/underscore-*.js
+    - public/javascripts/vendor/backbone-*.js
     - public/javascripts/vendor/jquery.ui.core.js
     - public/javascripts/vendor/jquery.ui.widget.js
     - public/javascripts/vendor/jquery.ui.position.js
     - public/javascripts/vendor/jquery.ui.mouse.js
     - public/javascripts/vendor/jquery.ui.sortable.js
     - public/javascripts/vendor/jquery.ui.autocomplete.js
-    - public/javascripts/vendor/backbone-*.js
+    - public/javascripts/vendor/jquery.ui.menu.js
+    - public/javascripts/vendor/jquery.fileupload.js
     - public/javascripts/vendor/json2.js
     - public/javascripts/vendor/visualsearch-*.js
     - public/javascripts/vendor/sprintf.js
@@ -49,6 +51,7 @@ javascripts:
     - public/javascripts/embed/embedded_login.js
   server_status:
     - public/javascripts/vendor/d3.js
+    - public/javascripts/vendor/cubism.v1.js
     - public/javascripts/server_stats/*.js
 
 stylesheets:
@@ -74,3 +77,5 @@ stylesheets:
     - public/stylesheets/pages/viewer_editing.css
   ie_only:
     - public/stylesheets/common/ie.css
+  server_status:
+    - public/stylesheets/server_status.css
