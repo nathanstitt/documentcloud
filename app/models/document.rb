@@ -117,7 +117,7 @@ class Document < ActiveRecord::Base
   }
   
   # The definition of the Solr search index. Via sunspot-rails.
-  searchable do
+  searchable :auto_index=>false do
 
     # Full Text...
     text :title, :default_boost => 2.0
@@ -155,6 +155,16 @@ class Document < ActiveRecord::Base
       self.docdata ? self.docdata.data.symbolize_keys : {}
     end
 
+  end
+  before_save :mark_for_auto_indexing_or_removal
+  after_save :perform_index_tasks_safely
+
+  def perform_index_tasks_safely
+    begin
+      perform_index_tasks
+    rescue Errno::ECONNREFUSED, Net::ReadTimeout
+      SolrReindexTask.perform_later(self)
+    end
   end
 
   # Main document search method -- handles queries.
