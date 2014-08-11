@@ -1,11 +1,17 @@
+# SolrTask is a record of a failed indexing operation
 class SolrTask < ActiveRecord::Base
 
   MAX_TRIES = 3 # How many times a task should be re-tried before giving up
 
   belongs_to :record, polymorphic: true
 
+  scope :pending, ->{ where("pending=?", true) }
+
+  # Retries indexing on the record.
+  # If the operation was a deletion, it removes it from the index,
+  # otherwise it calls `solr_index` on it
   def retry
-    self.update_attributes(:attempts, self.attempts+1)
+    self.update_attributes(:attempts => self.attempts+1)
     if options['removal']
       # Here we have to be careful.  The record won't be found since it was a delete.
       # this is taken from the Sunspot::Rails::Searchable#solr_clean_index_orphans
@@ -16,12 +22,12 @@ class SolrTask < ActiveRecord::Base
     else
       self.record.solr_index
     end
+    self.update_attributes(:pending=>false)
   rescue Errno::ECONNREFUSED, Net::ReadTimeout
-    if self.attempts < MAX_TRIES
-      self.update_attributes(:failed=>true)
+    if self.attempts >= MAX_TRIES
+      self.update_attributes!(:pending=>false)
     end
   end
-
 
 
   # If any of the common Solr exceptions occur,
@@ -32,9 +38,9 @@ class SolrTask < ActiveRecord::Base
       SolrTask.create!({ :record=>record, 'options'=>options })
   end
 
-  # Loops through
+  # Retries each pending task
   def self.retry_failures
-    SolrTask.where(:failed=>false).find_each{ | job | job.retry }
+    SolrTask.pending.find_each{ | job | job.retry }
   end
 
 end
