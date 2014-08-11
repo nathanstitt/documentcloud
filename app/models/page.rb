@@ -14,6 +14,7 @@ class Page < ActiveRecord::Base
   include DC::Search::Matchers
   include ActionView::Helpers::SanitizeHelper
   extend ActionView::Helpers::SanitizeHelper::ClassMethods
+  include DC::Search::ModelSupport
 
   belongs_to :document
   belongs_to :account
@@ -23,7 +24,7 @@ class Page < ActiveRecord::Base
 
   before_update :track_text_changes
 
-  searchable do
+  searchable_with_deferred_indexing do
     text    :text do
       DC::Search.clean_text(text)
     end
