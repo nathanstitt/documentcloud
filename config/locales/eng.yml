@@ -563,6 +563,8 @@
   - saved: Saved
   - search: Search
   - search_bar: Search Bar
+  - search_embed_too_long_error: Too many documents were selected for embedding.  Please
+      select fewer documents or embed a project
   - searching_dd: Searching Documents and Data
   - select_pages_remove: Select the pages you wish to remove.
   - select_single_to_embed: Please select a single document in order to create the
