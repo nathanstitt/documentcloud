@@ -1,4 +1,5 @@
 production:
+  auto_commit_after_request: false
   solr:
     hostname: ip-10-69-172-218.ec2.internal
     port: 7377
@@ -11,6 +12,7 @@ production:
     pid_dir: tmp/pids
 
 development:
+  auto_commit_after_request: false
   solr:
     hostname: localhost
     port: 7377
@@ -18,7 +20,9 @@ development:
     path: /solr/collection1
     pid_dir: tmp/pids
 
+
 test:
+  auto_commit_after_request: false
   solr:
     hostname: localhost
     port: 8982
@@ -27,6 +31,7 @@ test:
     pid_dir: tmp/pids
 
 staging:
+  auto_commit_after_request: false
   solr:
     hostname: ec2-50-16-197-147.compute-1.amazonaws.com
     port: 7377
