@@ -15,12 +15,12 @@ class SolrTask < ActiveRecord::Base
     if options['removal']
       # Here we have to be careful.  The record won't be found since it was a delete.
       # this is taken from the Sunspot::Rails::Searchable#solr_clean_index_orphans
-      new self.record_type do | fake_instance |
+      self.record_type.constantize.new do | fake_instance |
         fake_instance.id = self.record_id
         fake_instance.solr_remove_from_index
       end
     else
-      self.record.solr_index
+      self.record.solr_index if self.record
     end
     self.update_attributes(:pending=>false)
   rescue Errno::ECONNREFUSED, Net::ReadTimeout
@@ -29,13 +29,15 @@ class SolrTask < ActiveRecord::Base
     end
   end
 
-
   # If any of the common Solr exceptions occur,
   # save the record's type and ID and retry the indexing later
-  def self.perform(record, options={}, &block)
+  def self.perform(records, options={}, &block)
     yield
     rescue Errno::ECONNREFUSED, Net::ReadTimeout
-      SolrTask.create!({ :record=>record, 'options'=>options })
+      # If records isn't an array, the splat will convert it to one so it can be iterated
+      [*records].each do |record|
+        SolrTask.create!({ :record=>record, 'options'=>options })
+      end
   end
 
   # Retries each pending task

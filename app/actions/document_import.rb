@@ -128,8 +128,10 @@ class DocumentImport < DocumentAction
     EntityDate.reset(document)
     document.save!
     pages = document.reload.pages.order(:page_number)
-    Sunspot.index pages
-    Sunspot.commit
+    SolrTask.perform(pages) do
+      Sunspot.index pages
+      Sunspot.commit
+    end
     if ! options['secure'] && DC::Language::SUPPORTED.include?(document.language)
       text = pages.map(&:text).join('')
       DC::Import::EntityExtractor.new.extract(document, text)
