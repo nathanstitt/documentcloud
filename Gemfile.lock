@@ -263,7 +263,7 @@ DEPENDENCIES
   minitest
   minitest-spec-rails
   mocha
-  net-ssh-shell
+  net-ssh-shell (~> 0.2)
   nokogiri (~> 1.6.0)
   omniauth (~> 1.2.1)
   omniauth-facebook (~> 1.6)
