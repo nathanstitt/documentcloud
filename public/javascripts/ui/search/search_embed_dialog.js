@@ -35,16 +35,12 @@ dc.ui.SearchEmbedDialog = dc.ui.Dialog.extend({
     q          : ''
   },
 
-  constructor : function(docs) {
+  constructor : function(docs, query) {
     this.currentStep = 1;
     this.docs        = docs;
-    if (docs.length) {
-      this.query = _.map(docs, function(doc){ return 'document: ' + doc.id; }).join(' ');
-    } else {
-      this.query = dc.app.searcher.publicQuery() || "";
-    }
-
-    dc.ui.Dialog.call(this, {mode : 'custom', title : this.displayTitle()});
+    var options = {mode : 'custom', title : this.displayTitle()};
+    this.query = query;
+    dc.ui.Dialog.call(this, options);
     dc.ui.spinner.show();
     this.fetchCounts();
   },
