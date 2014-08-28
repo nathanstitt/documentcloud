@@ -39,6 +39,7 @@ group :development, :test do
   gem 'minitest-spec-rails'
   gem 'guard-minitest'
   gem 'spring'
+  gem 'mocha'
   # for downloading the translations from google spreadsheet
   gem 'google_drive'
   # securely ask for username/password for access to translation spreadsheet

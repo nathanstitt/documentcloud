@@ -3,7 +3,7 @@
 
 notification :growl
 
-guard :minitest, :all_on_start => true, :spring => 'rake test' do
+guard :minitest, :all_on_start => true, :spring => true do
 
   watch(%r{^test/test_helper\.rb}) { 'test' }
   watch(%r{^test/.+_test\.rb})

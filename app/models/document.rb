@@ -2,7 +2,8 @@
 class Document < ActiveRecord::Base
   include DC::Access
   include ActionView::Helpers::TextHelper
-  extend  DC::Store::DocumentFileType
+  include DC::Search::ModelSupport
+
   # Accessors and constants:
 
   attr_accessor :mentions, :total_mentions, :annotation_count, :hits
@@ -117,7 +118,7 @@ class Document < ActiveRecord::Base
   }
   
   # The definition of the Solr search index. Via sunspot-rails.
-  searchable do
+  searchable_with_deferred_indexing do
 
     # Full Text...
     text :title, :default_boost => 2.0
