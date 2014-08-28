@@ -3,6 +3,7 @@ class Document < ActiveRecord::Base
   include DC::Access
   include ActionView::Helpers::TextHelper
   include DC::Search::ModelSupport
+  include DC::Store::DocumentFileType
 
   # Accessors and constants:
 
@@ -173,7 +174,7 @@ class Document < ActiveRecord::Base
     email_me = params[:email_me] ? params[:email_me].to_i : false
     file_ext = File.extname(name).downcase[1..-1]
     if params[:file].respond_to?(:path) && ! self.valid_source_document?(params[:file].path)
-      raise ArgumentError.new("Invalid File Type")
+      raise InvalidFileType.new("Invalid File Type")
     end
     doc = self.create!(
       :organization_id    => organization.id,
