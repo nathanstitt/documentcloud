@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 1) do
+ActiveRecord::Schema.define(version: 20140807205855) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,8 +25,8 @@ ActiveRecord::Schema.define(version: 1) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.hstore   "identities"
-    t.string   "language",          limit: 3,   default: "eng"
-    t.string   "document_language", limit: 3,   default: "eng"
+    t.string   "language",          limit: 3
+    t.string   "document_language", limit: 3
   end
 
   add_index "accounts", ["email"], name: "index_accounts_on_email", unique: true, using: :btree
@@ -254,6 +254,16 @@ ActiveRecord::Schema.define(version: 1) do
     t.string  "securable_type", limit: 40, null: false
     t.integer "securable_id",              null: false
     t.string  "key",            limit: 40
+  end
+
+  create_table "solr_tasks", force: true do |t|
+    t.integer  "attempts",    default: 0
+    t.boolean  "pending",     default: true
+    t.hstore   "options",     default: {},   null: false
+    t.integer  "record_id"
+    t.string   "record_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

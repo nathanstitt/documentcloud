@@ -90,6 +90,18 @@ ALTER TABLE ONLY remote_urls
 CREATE INDEX remote_urls_indx_url ON remote_urls USING btree (url);
 
 
+
+CREATE TABLE "searches" (
+       id serial primary key,
+       organization_id integer NOT NULL,
+       account_id integer NOT NULL,
+       document_id integer,
+       query text NOT NULL,
+       occured_at timestamp NOT NULL
+);
+
+CREATE  INDEX  "index_searches_on_organization_id_and_occured_at" ON "searches"  ("organization_id", "occured_at");
+
 --
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --

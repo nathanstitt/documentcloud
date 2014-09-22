@@ -1,5 +1,7 @@
 class Search < ActiveRecord::Base
 
+  self.establish_connection( DC::ANALYTICS_DB ) unless Rails.env.test?
+
   belongs_to :organization
   belongs_to :account
 
