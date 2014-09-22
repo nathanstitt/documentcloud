@@ -13,7 +13,6 @@ class SearchController < ApplicationController
         json results
       end
     end
-    Search.log({:query=>params['q'], :account=>current_account})
   end
 
   def embed

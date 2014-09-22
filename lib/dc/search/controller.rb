@@ -14,6 +14,7 @@ module DC
         @query.page       = params[:page] ? params[:page].to_i : 1
         search_results    = Document.search(@query, opts)
         @documents        = search_results.results
+        ::Search.log(params[:q], current_account, current_organization) if logged_in?
       end
 
 
