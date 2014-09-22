@@ -13,12 +13,8 @@ class Search < ActiveRecord::Base
 
   before_create :set_occured_to_now
 
-  def self.log(options)
-    return unless options[:account] && options[:query].present?
-    if !options[:organization]
-      options[:organization] = options[:account].organization
-    end
-    self.create!(options)
+  def self.log(query, account, organization, document=nil)
+    self.create!({ :query=>query, :account=>account, :organization=>organization, :document=>document})
   end
 
   private

@@ -226,7 +226,7 @@ class DocumentsController < ApplicationController
     doc       = current_document(true)
     pages     = Page.search_for_page_numbers(params[:q], doc)
     @response = {'query' => params[:q], 'results' => pages}
-    Search.log({:query=>params[:q], :account=>current_account, :document=>doc})
+    Search.log(params[:q], current_account, current_organization, doc) if logged_in?
     json_response
   end
 
